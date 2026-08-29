@@ -1,6 +1,6 @@
 ﻿## Concrete [EntityManager] for Warlock of Firetop Mountain.
 ##
-## Registered as an autoload singleton (name: "WarlockEntityManager") in
+## Registered as an autoload singleton (name: "WarlockEntityManager_auto") in
 ## project.godot. Implements the abstract methods EntityManager requires to
 ## be instantiable at all — most are placeholder stubs (see TODOs) since
 ## nothing in the GDD, rules-reference, or UI/UX shell spec defines their
