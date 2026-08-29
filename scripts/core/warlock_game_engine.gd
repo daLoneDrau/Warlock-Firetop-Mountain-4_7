@@ -5,10 +5,10 @@
 ## WarlockEntityManager_auto, since _initialize_systems() below references
 ## the WarlockEntityManager_auto autoload directly by its global name.
 ##
-## This session's scope is deliberately bare: wire the engine substrate
-## together and prove the boot chain works end to end via a trivial
-## placeholder scene. No Title/CharacterCreation content yet (§12 of the
-## UI/UX shell spec) — that's the next step once this is confirmed working.
+## Wires the engine substrate together and starts on TitleScene (§12.2 of
+## the UI/UX shell spec) — placeholder diorama backdrop for now, real
+## Blender asset to follow (see docs/title_diorama_requirements.md).
+## `Continue`/save-detection still not built (no save system exists yet).
 class_name WarlockGameEngine
 extends GameEngine
 
@@ -50,9 +50,7 @@ func _setup_window() -> void:
 	pass
 
 
-## Bootstrap-only initial scene: a trivial placeholder proving the chain
-## booted, NOT the real TitleScene (§12.2 of the UI/UX shell spec) — that
-## still needs the diorama pipeline (§5, not built yet) and save-existence
-## detection (§7, not built yet).
+## Initial scene is now TitleScene — BootTest.tscn/boot_test.gd served
+## their purpose (proving the boot chain) and can be deleted from the repo.
 func _start_game() -> void:
-	change_scene("BootTest", "res://scenes/BootTest.tscn")
+	change_scene("Title", "res://scenes/TitleScene.tscn")

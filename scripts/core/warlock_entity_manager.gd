@@ -18,11 +18,11 @@ func is_pc(e: Entity) -> bool:
 	return e != null and e.tags.has(PlayerTags.Tag.PC)
 
 
-## TODO: no item-entity tagging convention has been defined for this
-## project yet (no ItemFlags/item-category decision made in any design doc).
-## Stubbed false until that's designed.
-func is_item(_e: Entity) -> bool:
-	return false
+## Determines if an [Entity] is an item — has an [ItemComponent] (or any
+## subclass; ItemComponent's own IS_SLOT_ROOT means all concrete item
+## types share this one check).
+func is_item(e: Entity) -> bool:
+	return e != null and e.has_component("ItemComponent")
 
 
 ## TODO: no "unique entity" concept has been defined for this project yet.
@@ -42,18 +42,24 @@ func kill_spells_on(_e_id: String) -> void:
 ## (no unequip performed) until that design exists.
 ##
 ## NOTE (flagged, not fixed here): the base EntityManager.destroy_dynamic_entity()
-## (core/entity_manager.gd, not overridden by this class) assumes a
-## PlayerComponent with an `equipped_items` field that doesn't exist anywhere
-## in this project's design — it looks like leftover scaffolding from a
-## different game built on this same ECS. It will throw at runtime the first
-## time any entity's `alive` is set false while a PC-tagged entity exists.
-## Not reachable this session (nothing sets `alive = false` yet, and MVP has
-## no death path per GDD §8) — noted here so it isn't a surprise later.
+## (core/entity_manager.gd, not overridden by this class) reads a
+## `player_data.equipped_items` field. Confirmed against the actual
+## PlayerComponent source (pulled from the full repo tree): that class has
+## no `equipped_items` field at all — it's session-state only (is_alive,
+## in_menu, in_cutscene, play_time). This is leftover scaffolding from a
+## different game built on this same ECS, not something that will ever
+## work as written. It will throw at runtime the first time any entity's
+## `alive` is set false while a PC-tagged entity exists. Not reachable
+## this session (nothing sets `alive = false` yet, and MVP has no death
+## path per GDD §8) — noted here so it isn't a surprise later.
 func unequip_from_inventory(_player_entity: Entity, _item_entity: Entity) -> bool:
 	return false
 
 
-## TODO: no ScriptSystem wiring exists yet for this project. No-op until
-## entity scripting is actually used.
+## Still a no-op even though WarlockScriptSystem_auto now exists — scripts
+## attach automatically via ScriptSystem's own Switchboard subscription to
+## "entity_added" (see warlock_script_system.gd), not through this method.
+## Nothing in this project calls send_init_script_event() as a trigger for
+## anything; kept as a no-op stub to satisfy the abstract contract.
 func send_init_script_event(_entity: Entity) -> void:
 	pass
