@@ -14,11 +14,18 @@ extends GameEngine
 
 
 ## GameEngine's base _ready() sets process_mode, running, and caches the
-## window reference — call it first, then bootstrap per GameEngine.run()'s
-## own doc comment ("Call this from your main scene or autoload _ready()").
+## window reference — call it first, then bootstrap.
+##
+## run() is deferred rather than called inline: GameEngine.run() eventually
+## reaches change_scene() -> get_tree().change_scene_to_file(), which calls
+## remove_child() on the tree root internally. During an autoload's own
+## _ready(), the SceneTree is still busy adding the initial scene, and
+## remove_child() isn't allowed while the tree is in that blocked state
+## ("Parent node is busy adding/removing children"). Deferring run() lets
+## that initial setup finish first.
 func _ready() -> void:
 	super._ready()
-	run()
+	call_deferred("run")
 
 
 ## Wires the EntityManager autoload onto this engine instance. GameEngine
