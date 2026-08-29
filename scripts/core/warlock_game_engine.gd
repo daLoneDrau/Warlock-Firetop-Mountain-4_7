@@ -1,9 +1,9 @@
 ﻿## Concrete [GameEngine] for Warlock of Firetop Mountain.
 ##
-## Registered as an autoload singleton (name: "WarlockGameEngine") in
-## project.godot — must load AFTER Switchboard_auto, DiceTower, and
-## WarlockEntityManager, since _initialize_systems() below references the
-## WarlockEntityManager autoload directly by its global name.
+## Registered as an autoload singleton (name: "WarlockGameEngine_auto") in
+## project.godot — must load AFTER Switchboard_auto, DiceTower_auto, and
+## WarlockEntityManager_auto, since _initialize_systems() below references
+## the WarlockEntityManager_auto autoload directly by its global name.
 ##
 ## This session's scope is deliberately bare: wire the engine substrate
 ## together and prove the boot chain works end to end via a trivial
@@ -55,4 +55,4 @@ func _setup_window() -> void:
 ## still needs the diorama pipeline (§5, not built yet) and save-existence
 ## detection (§7, not built yet).
 func _start_game() -> void:
-	change_scene("boot_test", "res://scenes/BootTest.tscn")
+	change_scene("BootTest", "res://scenes/BootTest.tscn")
