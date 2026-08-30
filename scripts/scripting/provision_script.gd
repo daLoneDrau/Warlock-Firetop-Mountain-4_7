@@ -15,7 +15,7 @@ func on_item_used(ctx: Dictionary) -> Dictionary:
 
 	var provisions: WarlockItemComponent = WarlockEntityManager_auto.get_component(entity_id, WarlockItemComponent) as WarlockItemComponent
 	if provisions == null:
-		push_warning("ProvisionScript.on_item_used: no WarlockProvisionItemComponent on %s" % entity_id)
+		push_warning("ProvisionScript.on_item_used: no WarlockItemComponent on %s" % entity_id)
 		return {}
 
 	if provisions.quantity <= 0:
@@ -23,7 +23,7 @@ func on_item_used(ctx: Dictionary) -> Dictionary:
 
 	# Rules_reference.md "Provisions": "Consuming one restores a fixed
 	# Stamina amount (adapted value: +4)" — clamped to max, same as
-	# PotionUseScript's Strength-potion handling.
+	# PotionScript's Strength-potion handling.
 	var health: WarlockHealthComponent = WarlockEntityManager_auto.get_component(user_id, WarlockHealthComponent) as WarlockHealthComponent
 	if health != null:
 		health.current_hp = min(health.current_hp + 4.0, health.max_hp)

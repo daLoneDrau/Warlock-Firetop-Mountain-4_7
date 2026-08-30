@@ -28,10 +28,10 @@ func on_item_used(ctx: Dictionary) -> Dictionary:
 
 	var potion: WarlockItemComponent = WarlockEntityManager_auto.get_component(entity_id, WarlockItemComponent) as WarlockItemComponent
 	if potion == null:
-		push_warning("PotionScript.on_item_used: no WarlockPotionItemComponent on %s" % entity_id)
+		push_warning("PotionScript.on_item_used: no WarlockItemComponent on %s" % entity_id)
 		return {}
 
-	if potion.charges_remaining <= 0:
+	if potion.quantity <= 0:
 		return {"consumed": false, "reason": &"empty"}
 
 	match potion.potion_type:
@@ -45,12 +45,12 @@ func on_item_used(ctx: Dictionary) -> Dictionary:
 			push_warning("PotionScript.on_item_used: unrecognized potion_type '%s'" % potion.potion_type)
 			return {}
 
-	potion.charges_remaining -= 1
-	# NOTE: not handling "remove the item entity once charges_remaining
+	potion.quantity -= 1
+	# NOTE: not handling "remove the item entity once quantity
 	# hits 0" here — untested this session since nothing triggers use yet.
 	# Worth revisiting once §7's overlay actually calls this.
 
-	return {"consumed": true, "potion_type": potion.potion_type, "charges_remaining": potion.charges_remaining}
+	return {"consumed": true, "potion_type": potion.potion_type, "quantity": potion.quantity}
 
 
 ## Rules_reference.md "Potions": "Using a measure restores the associated
