@@ -1,15 +1,4 @@
-## Item data for the player's chosen potion bottle. One item entity per
-## run — the player selects exactly one potion type at chargen
-## (Rules_reference.md "Potions") — not three separate item entities.
-##
-## Shares [ItemComponent]'s `IS_SLOT_ROOT = "ItemComponent"` slot
-## (inherited, not redeclared) — this is the actual intended use of that
-## mechanism: many concrete item subtypes, one item-component slot per
-## item entity.
-##
-## Effect behavior lives in [PotionUseScript] (attached via
-## [WarlockScriptComponent]), not here — this class is pure data, matching
-## the rest of the ECS's component/script split.
+## Concrete [ItemComponent] for Warlock of Firetop Mountain.
 class_name WarlockItemComponent
 extends ItemComponent
 
