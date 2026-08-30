@@ -12,9 +12,9 @@ class_name TitleScene
 extends Scene
 
 
-@onready var _diorama_viewport: SubViewport = $DioramaViewport
-@onready var _diorama_display: TextureRect = $DioramaDisplay
-@onready var _new_game_button: Button = $NewGameButton
+@onready var _diorama_viewport: SubViewport = %DioramaViewport
+@onready var _diorama_display: TextureRect = %DioramaDisplay
+@onready var _new_game_button: Button = %NewGameButton
 
 
 func _ready() -> void:

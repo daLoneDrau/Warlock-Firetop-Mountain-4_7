@@ -1,0 +1,90 @@
+[gd_resource type="Theme" format=3 uid="uid://dm6d4kvtt1q4y"]
+
+[ext_resource type="FontFile" uid="uid://popgvuq08tka" path="res://assets/fonts/static/IBMPlexSans-Medium.ttf" id="1_7uusv"]
+[ext_resource type="FontFile" uid="uid://b8gc6gc8cnatm" path="res://assets/fonts/static/IBMPlexSans-Regular.ttf" id="1_27v6b"]
+[ext_resource type="FontFile" uid="uid://gbhcivmh1u3u" path="res://assets/fonts/static/IBMPlexSans-Bold.ttf" id="3_8aw70"]
+[ext_resource type="FontFile" uid="uid://cejlmhs7gknrd" path="res://assets/fonts/static/IBMPlexSans-SemiBold.ttf" id="3_eqcwn"]
+[ext_resource type="FontFile" uid="uid://il6sdh85g31p" path="res://assets/fonts/IBMPlexMono-Regular.ttf" id="4_6r5ox"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n8eu1"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yjbx8"]
+content_margin_left = 8.0
+content_margin_top = 4.0
+content_margin_right = 8.0
+content_margin_bottom = 4.0
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.227451, 0.227451, 0.227451, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_27v6b"]
+bg_color = Color(0.109804, 0.109804, 0.109804, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.227451, 0.227451, 0.227451, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[resource]
+default_font = ExtResource("1_27v6b")
+default_font_size = 16
+BodyLabel/base_type = &"Label"
+BodyLabel/colors/font_color = Color(0.909804, 0.909804, 0.909804, 1)
+BodyLabel/font_sizes/font_size = 16
+BodyLabel/fonts/font = ExtResource("1_27v6b")
+Button/colors/font_color = Color(0.909804, 0.909804, 0.909804, 1)
+Button/colors/font_disabled_color = Color(0.415686, 0.415686, 0.415686, 1)
+Button/colors/font_focus_color = Color(0.909804, 0.909804, 0.909804, 1)
+Button/colors/font_hover_color = Color(0.909804, 0.909804, 0.909804, 1)
+Button/colors/font_pressed_color = Color(0.909804, 0.909804, 0.909804, 1)
+Button/font_sizes/font_disabled_size = 18
+Button/font_sizes/font_size = 18
+Button/fonts/font = ExtResource("1_7uusv")
+Button/fonts/font_disabled = ExtResource("1_27v6b")
+Button/styles/disabled = SubResource("StyleBoxEmpty_n8eu1")
+Button/styles/focus = SubResource("StyleBoxEmpty_n8eu1")
+Button/styles/hover = SubResource("StyleBoxFlat_yjbx8")
+Button/styles/normal = SubResource("StyleBoxEmpty_n8eu1")
+Button/styles/pressed = SubResource("StyleBoxFlat_yjbx8")
+ChoiceButton/base_type = &"Button"
+ChoiceButton/font_sizes/font_size = 18
+ChoiceButton/fonts/font = ExtResource("1_7uusv")
+HeadingLabel/base_type = &"Label"
+HeadingLabel/colors/font_color = Color(0.909804, 0.909804, 0.909804, 1)
+HeadingLabel/font_sizes/font_size = 22
+HeadingLabel/fonts/font = ExtResource("3_eqcwn")
+Label/colors/font_color = Color(0.909804, 0.909804, 0.909804, 1)
+Label/font_sizes/font_size = 16
+Label/fonts/font = ExtResource("1_27v6b")
+Panel/styles/panel = SubResource("StyleBoxFlat_27v6b")
+RequirementTagLabel/base_type = &"Label"
+RequirementTagLabel/colors/font_color = Color(1, 0.701961, 0.278431, 1)
+RequirementTagLabel/font_sizes/font_size = 16
+RequirementTagLabel/fonts/font = ExtResource("1_27v6b")
+SmallPrintLabel/base_type = &"Label"
+SmallPrintLabel/colors/font_color = Color(0.909804, 0.909804, 0.909804, 1)
+SmallPrintLabel/font_sizes/font_size = 12
+SmallPrintLabel/fonts/font = ExtResource("1_27v6b")
+StatLabelLabel/base_type = &"Label"
+StatLabelLabel/colors/font_color = Color(0.909804, 0.909804, 0.909804, 1)
+StatLabelLabel/font_sizes/font_size = 16
+StatLabelLabel/fonts/font = ExtResource("1_27v6b")
+StatValueLabel/base_type = &"Label"
+StatValueLabel/colors/font_color = Color(1, 0.701961, 0.278431, 1)
+StatValueLabel/font_sizes/font_size = 20
+StatValueLabel/fonts/font = ExtResource("4_6r5ox")
+TitleLabel/base_type = &"Label"
+TitleLabel/colors/font_color = Color(0.909804, 0.909804, 0.909804, 1)
+TitleLabel/font_sizes/font_size = 42
+TitleLabel/fonts/font = ExtResource("3_8aw70")

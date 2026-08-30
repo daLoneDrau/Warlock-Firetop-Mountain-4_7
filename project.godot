@@ -21,7 +21,6 @@ Switchboard_auto="*res://daLoneDrau-GDEng-ECS/services/switchboard.gd"
 DiceTower_auto="*res://daLoneDrau-GDEng-ECS/services/dice_tower.gd"
 WarlockEntityManager_auto="*res://scripts/core/warlock_entity_manager.gd"
 WarlockGameEngine_auto="*res://scripts/core/warlock_game_engine.gd"
-WarlockScriptSystem_auto="*res://scripts/systems/warlock_script_system.gd"
 
 [display]
 
@@ -29,6 +28,14 @@ window/size/viewport_width=960
 window/size/viewport_height=540
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
+
+[filesystem]
+
+import/blender/enabled=false
+
+[gui]
+
+theme/custom="uid://dm6d4kvtt1q4y"
 
 [physics]
 

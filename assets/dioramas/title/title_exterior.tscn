@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://b1cutojvsjjgp"]
+
+[ext_resource type="PackedScene" uid="uid://bkvx1do642kd6" path="res://assets/dioramas/title/title_exterior.glb" id="1_xbgun"]
+
+[node name="title_exterior" unique_id=1167570133 instance=ExtResource("1_xbgun")]

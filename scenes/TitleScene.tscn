@@ -1,8 +1,13 @@
 [gd_scene format=3 uid="uid://gcqiqslpiwc0"]
 
 [ext_resource type="Script" uid="uid://b8o4yvscr85l4" path="res://scripts/title/title_scene.gd" id="1_lx1li"]
+[ext_resource type="PackedScene" uid="uid://bdhd20t46d4e" path="res://assets/modeling/dioramas/mountain_landscape.glb" id="2_n8eu1"]
+[ext_resource type="Script" uid="uid://b7vwy54v8l8ek" path="res://scripts/rendering/diorama_wireframe_shader.gd" id="3_n8eu1"]
 
 [sub_resource type="World3D" id="World3D_rj2gr"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_vnkhm"]
+viewport_path = NodePath("DioramaViewport")
 
 [node name="Title" type="Control" unique_id=347501780]
 layout_mode = 3
@@ -14,20 +19,56 @@ grow_vertical = 2
 script = ExtResource("1_lx1li")
 
 [node name="DioramaViewport" type="SubViewport" parent="." unique_id=68105997]
+unique_name_in_owner = true
 world_3d = SubResource("World3D_rj2gr")
 size = Vector2i(960, 540)
 render_target_update_mode = 4
 
-[node name="DioramaCamera" type="Camera3D" parent="DioramaViewport"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 8)
+[node name="mountain_landscape" parent="DioramaViewport" unique_id=276182733 instance=ExtResource("2_n8eu1")]
+
+[node name="DioramaWireframeShader" type="Node" parent="DioramaViewport/mountain_landscape" unique_id=116299347]
+script = ExtResource("3_n8eu1")
+
+[node name="DioramaCamera" type="Camera3D" parent="DioramaViewport" unique_id=1882927282]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.65, 5.825)
 current = true
 
-[node name="DioramaDisplay" type="TextureRect" parent="."]
+[node name="DioramaDisplay" type="TextureRect" parent="." unique_id=1435934206]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+texture = SubResource("ViewportTexture_vnkhm")
 expand_mode = 1
 stretch_mode = 5
+
+[node name="TitleLabel" type="Label" parent="." unique_id=87621648]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -300.0
+offset_top = 60.0
+offset_right = 300.0
+offset_bottom = 100.0
+grow_horizontal = 2
+theme_type_variation = &"TitleLabel"
+text = "WARLOCK OF FIRETOP MOUNTAIN"
+horizontal_alignment = 1
+
+[node name="NewGameButton" type="Button" parent="." unique_id=1221156161]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -80.0
+offset_top = 440.0
+offset_right = 80.0
+offset_bottom = 480.0
+grow_horizontal = 2
+mouse_default_cursor_shape = 2
+text = "New Game"
