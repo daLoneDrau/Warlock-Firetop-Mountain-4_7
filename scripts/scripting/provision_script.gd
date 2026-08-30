@@ -30,4 +30,4 @@ func on_item_used(ctx: Dictionary) -> Dictionary:
 
 	provisions.quantity -= 1
 
-	return {"consumed": true, "provisions_remaining": provisions.provisions_remaining}
+	return {"consumed": true, "quantity": provisions.quantity}
