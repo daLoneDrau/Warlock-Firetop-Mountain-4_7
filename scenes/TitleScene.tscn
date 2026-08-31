@@ -45,15 +45,15 @@ texture = SubResource("ViewportTexture_vnkhm")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="TitlePanel" type="PanelContainer" parent="."]
+[node name="TitlePanel" type="PanelContainer" parent="." unique_id=1665215285]
 layout_mode = 1
+anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_top = 40.0
 grow_horizontal = 2
-grow_vertical = 1
 
-[node name="TitleMargin" type="MarginContainer" parent="TitlePanel"]
+[node name="TitleMargin" type="MarginContainer" parent="TitlePanel" unique_id=872786108]
 layout_mode = 2
 theme_override_constants/margin_left = 32
 theme_override_constants/margin_top = 16
@@ -66,29 +66,29 @@ theme_type_variation = &"TitleLabel"
 text = "WARLOCK OF FIRETOP MOUNTAIN"
 horizontal_alignment = 1
 
-[node name="MenuPanel" type="PanelContainer" parent="."]
+[node name="MenuPanel" type="PanelContainer" parent="." unique_id=1572831305]
 layout_mode = 1
+anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_top = 380.0
 grow_horizontal = 2
-grow_vertical = 1
 
-[node name="MenuMargin" type="MarginContainer" parent="MenuPanel"]
+[node name="MenuMargin" type="MarginContainer" parent="MenuPanel" unique_id=77002566]
 layout_mode = 2
 theme_override_constants/margin_left = 24
 theme_override_constants/margin_top = 16
 theme_override_constants/margin_right = 24
 theme_override_constants/margin_bottom = 16
 
-[node name="MenuButtonList" type="VBoxContainer" parent="MenuPanel/MenuMargin"]
+[node name="MenuButtonList" type="VBoxContainer" parent="MenuPanel/MenuMargin" unique_id=2050440278]
 layout_mode = 2
 theme_override_constants/separation = 8
 alignment = 1
 
 [node name="NewGameButton" type="Button" parent="MenuPanel/MenuMargin/MenuButtonList" unique_id=1221156161]
 unique_name_in_owner = true
-layout_mode = 2
 custom_minimum_size = Vector2(220, 32)
+layout_mode = 2
 mouse_default_cursor_shape = 2
 text = "New Game"

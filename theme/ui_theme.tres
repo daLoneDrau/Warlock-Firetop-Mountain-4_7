@@ -36,6 +36,8 @@ corner_radius_top_right = 2
 corner_radius_bottom_right = 2
 corner_radius_bottom_left = 2
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pfl7r"]
+
 [resource]
 default_font = ExtResource("1_27v6b")
 default_font_size = 16
@@ -68,6 +70,7 @@ Label/colors/font_color = Color(0.909804, 0.909804, 0.909804, 1)
 Label/font_sizes/font_size = 16
 Label/fonts/font = ExtResource("1_27v6b")
 Panel/styles/panel = SubResource("StyleBoxFlat_27v6b")
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_27v6b")
 RequirementTagLabel/base_type = &"Label"
 RequirementTagLabel/colors/font_color = Color(1, 0.701961, 0.278431, 1)
 RequirementTagLabel/font_sizes/font_size = 16
