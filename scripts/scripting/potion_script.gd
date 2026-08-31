@@ -36,7 +36,7 @@ func on_item_used(ctx: Dictionary) -> Dictionary:
 
 	match potion.potion_type:
 		&"skill":
-			_restore_ability(user_id, WarlockAbilityType.Type.SKILL)
+			_restore_ability(user_id, StringName(WarlockAbilityType.Type.find_key(WarlockAbilityType.Type.SKILL)))
 		&"strength":
 			_restore_stamina(user_id)
 		&"fortune":
@@ -56,7 +56,7 @@ func on_item_used(ctx: Dictionary) -> Dictionary:
 ## Rules_reference.md "Potions": "Using a measure restores the associated
 ## stat's Current value to its Initial value" — per §13.1, that's
 ## clear_sources() on the relevant AbilityScore.
-func _restore_ability(user_id: StringName, ability: int) -> void:
+func _restore_ability(user_id: StringName, ability: StringName) -> void:
 	var abilities: WarlockAbilitiesComponent = WarlockEntityManager_auto.get_component(user_id, WarlockAbilitiesComponent) as WarlockAbilitiesComponent
 	if abilities == null:
 		return
@@ -82,7 +82,7 @@ func _apply_fortune(user_id: StringName) -> void:
 	var abilities: WarlockAbilitiesComponent = WarlockEntityManager_auto.get_component(user_id, WarlockAbilitiesComponent) as WarlockAbilitiesComponent
 	if abilities == null:
 		return
-	var luck := abilities.value(WarlockAbilityType.Type.LUCK)
+	var luck := abilities.value(StringName(WarlockAbilityType.Type.find_key(WarlockAbilityType.Type.LUCK)))
 	if luck != null:
 		luck.set_base(luck.base + 1)
 		luck.clear_sources()

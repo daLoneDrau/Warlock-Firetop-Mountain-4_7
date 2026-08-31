@@ -13,7 +13,7 @@ extends AbilitiesComponent
 const IS_SLOT_ROOT: bool = true
 
 
-func add(ability: int, initial_score: int = 0) -> void:
+func add(ability: StringName, initial_score: int = 0) -> void:
 	var score := WarlockAbilityScore.new(self)
 	score.base = initial_score
 	ability_set[ability] = score
