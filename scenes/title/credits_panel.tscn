@@ -1,0 +1,149 @@
+[gd_scene format=3 uid="uid://dctn7nvtb18d4"]
+
+[ext_resource type="Script" uid="uid://c1c52mpvd011r" path="res://scripts/scenes/title/credits_panel.gd" id="1_0utd8"]
+
+[node name="CreditsPanel" type="PanelContainer" unique_id=532806836]
+offset_left = 96.0
+offset_top = 266.0
+offset_right = 396.0
+offset_bottom = 434.0
+theme_type_variation = &"MenuPanel"
+script = ExtResource("1_0utd8")
+
+[node name="Column" type="VBoxContainer" parent="." unique_id=1626700396]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="HeaderBar" type="PanelContainer" parent="Column" unique_id=1933849204]
+layout_mode = 2
+theme_type_variation = &"HeaderBar"
+
+[node name="Header" type="HBoxContainer" parent="Column/HeaderBar" unique_id=1701269969]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="Column/HeaderBar/Header" unique_id=416389083]
+layout_mode = 2
+theme_type_variation = &"PanelHeader"
+text = "CREDITS"
+
+[node name="Spacer" type="Control" parent="Column/HeaderBar/Header" unique_id=342664647]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="BackButton" type="Button" parent="Column/HeaderBar/Header" unique_id=1684362911]
+layout_mode = 2
+focus_mode = 1
+mouse_default_cursor_shape = 2
+theme_type_variation = &"MenuPanelButton"
+theme_override_colors/font_color = Color(0.431, 0.431, 0.431, 1)
+theme_override_colors/font_focus_color = Color(0.863, 0.863, 0.863, 1)
+theme_override_colors/font_pressed_color = Color(0.541, 0.541, 0.541, 1)
+theme_override_colors/font_hover_color = Color(0.863, 0.863, 0.863, 1)
+theme_override_colors/font_disabled_color = Color(0.29, 0.29, 0.29, 1)
+theme_override_font_sizes/font_size = 15
+text = "MAIN MENU ›"
+flat = true
+
+[node name="Rows" type="VBoxContainer" parent="Column" unique_id=2092099178]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="Row0" type="HBoxContainer" parent="Column/Rows" unique_id=1010528459]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Role" type="Label" parent="Column/Rows/Row0" unique_id=1664144110]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+theme_type_variation = &"PanelHeader"
+text = "DESIGN · CODE"
+
+[node name="Names" type="Label" parent="Column/Rows/Row0" unique_id=579184506]
+layout_mode = 2
+theme_type_variation = &"PanelContent"
+text = "R. HALLORAN"
+
+[node name="Row1" type="HBoxContainer" parent="Column/Rows" unique_id=949771488]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Role" type="Label" parent="Column/Rows/Row1" unique_id=1675389961]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+theme_type_variation = &"PanelHeader"
+text = "GEOMETRY"
+
+[node name="Names" type="Label" parent="Column/Rows/Row1" unique_id=1915436827]
+layout_mode = 2
+theme_type_variation = &"PanelContent"
+text = "M. ABARA"
+
+[node name="Row2" type="HBoxContainer" parent="Column/Rows" unique_id=558971329]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Role" type="Label" parent="Column/Rows/Row2" unique_id=215448769]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+theme_type_variation = &"PanelHeader"
+text = "DUNGEON TABLES"
+
+[node name="Names" type="Label" parent="Column/Rows/Row2" unique_id=22812076]
+layout_mode = 2
+theme_type_variation = &"PanelContent"
+text = "R. HALLORAN · J. VOSS"
+
+[node name="Row3" type="HBoxContainer" parent="Column/Rows" unique_id=2123177128]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Role" type="Label" parent="Column/Rows/Row3" unique_id=2035772619]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+theme_type_variation = &"PanelHeader"
+text = "SOUND"
+
+[node name="Names" type="Label" parent="Column/Rows/Row3" unique_id=1587621378]
+layout_mode = 2
+theme_type_variation = &"PanelContent"
+text = "J. VOSS"
+
+[node name="Row4" type="HBoxContainer" parent="Column/Rows" unique_id=1983030070]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Role" type="Label" parent="Column/Rows/Row4" unique_id=1128751203]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+theme_type_variation = &"PanelHeader"
+text = "TESTING"
+
+[node name="Names" type="Label" parent="Column/Rows/Row4" unique_id=1686433767]
+layout_mode = 2
+theme_type_variation = &"PanelContent"
+text = "THE THURSDAY TABLE"
+
+[node name="Row5" type="PanelContainer" parent="Column/Rows" unique_id=1656363074]
+layout_mode = 2
+theme_type_variation = &"ColophonRule"
+
+[node name="Colophon" type="HBoxContainer" parent="Column/Rows/Row5" unique_id=1410267458]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Text" type="Label" parent="Column/Rows/Row5/Colophon" unique_id=1165214504]
+layout_mode = 2
+theme_type_variation = &"ColophonLabel"
+text = "After DAGGORATH, AKALABETH, WIZARDRY."
+
+[node name="Spacer" type="Control" parent="Column/Rows/Row5/Colophon" unique_id=912684097]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="Build" type="Label" parent="Column/Rows/Row5/Colophon" unique_id=2000853986]
+layout_mode = 2
+theme_type_variation = &"MetaLabel"
+text = "BUILD 0.3"
