@@ -224,6 +224,7 @@ theme_type_variation = &"HintLabel"
 text = "↑↓ SELECT · RETURN CONFIRM"
 
 [node name="Cursor" type="ColorRect" parent="UI/Root/Hint" unique_id=1970467618]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(9, 16)
 layout_mode = 2
 size_flags_vertical = 4
