@@ -50,6 +50,11 @@
 ## a genuinely dimmed panel — only the Name label actually dims. Flagging
 ## rather than inventing a style here, since the visual treatment (border/
 ## fill color for a disabled panel) isn't specified.
+##
+## `Hint/Cursor` (the ColorRect standing in for an old-terminal-style
+## blinking caret next to the "↑↓ SELECT · RETURN CONFIRM" hint) blinks
+## via a looping Tween started in _ready() — a hard show/hide toggle, not
+## a fade, to read as a blocky terminal cursor rather than a soft pulse.
 class_name TitleScene
 extends Scene
 
@@ -58,8 +63,17 @@ enum MenuItem { NEW_GAME, CONTINUE, SETTINGS, CREDITS }
 
 const ITEMS_PATH: NodePath = ^"UI/Root/MenuPanel/Column/ItemPadding/Items"
 
+## No node in TitleScene.tscn has unique_name_in_owner set (deliberately,
+## per this file's own convention above) — `%Cursor` would fail to
+## resolve, so this is looked up by explicit path like everything else.
+const CURSOR_PATH: NodePath = ^"UI/Root/Hint/Cursor"
+
+## How long the cursor stays visible/hidden per blink phase. 0.5s reads as
+## a classic ~1Hz terminal-caret blink rather than something frantic.
+const CURSOR_BLINK_PHASE_SEC: float = 0.5
+
 ## the cursor element
-@onready var _cursor: ColorRect = %Cursor
+var _cursor: ColorRect
 
 ## Row -> {panel, caret, name_label, disabled} node refs, indexed by
 ## MenuItem. Built once in _ready() from whatever children ITEMS_PATH
@@ -74,6 +88,8 @@ var _selected: int = MenuItem.NEW_GAME
 
 
 func _ready() -> void:
+	_cursor = get_node(CURSOR_PATH) as ColorRect
+
 	var items: Node = get_node(ITEMS_PATH)
 	var children: Array = items.get_children()
 	for i in children.size():
@@ -103,7 +119,17 @@ func _ready() -> void:
 
 	if _rows[_selected]["disabled"]:
 		_selected = _next_enabled_index(_selected, 1)
-	_apply_row_style(_selected)
+
+	# Every row needs its style set at init, not just the selected one —
+	# otherwise Settings/Credits keep whatever theme_type_variation was
+	# baked into the .tscn (MenuItemNormal/MenuNormal) instead of actually
+	# switching to MenuItemDisabled/MenuDisabled, even though `disabled`
+	# is correctly true in `_rows`. This was the bug: only the initially-
+	# selected row was ever visited here before.
+	for i in _rows.size():
+		_apply_row_style(i, i == _selected)
+
+	_start_cursor_blink()
 
 
 ## Routes ui_up/ui_down to move the highlighted row, ui_confirm to act on
@@ -182,6 +208,19 @@ func _apply_row_style(index: int, is_selected: bool = true) -> void:
 		&"MenuDisabled" if disabled
 		else (&"MenuSelected" if selected else &"MenuNormal")
 	)
+
+
+## Hard show/hide toggle on a loop, rather than a fade — an old terminal
+## caret snaps on/off, it doesn't pulse. The Tween is created on `self`
+## (this Scene node), so it's owned by and stops with the scene the normal
+## way; nothing to clean up in on_exit().
+func _start_cursor_blink() -> void:
+	var tween: Tween = create_tween()
+	tween.set_loops()
+	tween.tween_interval(CURSOR_BLINK_PHASE_SEC)
+	tween.tween_callback(_cursor.hide)
+	tween.tween_interval(CURSOR_BLINK_PHASE_SEC)
+	tween.tween_callback(_cursor.show)
 
 
 ## NOTE: CharacterCreationScene doesn't exist yet (next step after this
