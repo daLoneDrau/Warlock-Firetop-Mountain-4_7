@@ -58,6 +58,9 @@ enum MenuItem { NEW_GAME, CONTINUE, SETTINGS, CREDITS }
 
 const ITEMS_PATH: NodePath = ^"UI/Root/MenuPanel/Column/ItemPadding/Items"
 
+## the cursor element
+@onready var _cursor: ColorRect = %Cursor
+
 ## Row -> {panel, caret, name_label, disabled} node refs, indexed by
 ## MenuItem. Built once in _ready() from whatever children ITEMS_PATH
 ## actually has, rather than hard node-path per row, so row count/order
