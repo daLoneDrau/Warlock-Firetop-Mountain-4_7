@@ -20,12 +20,6 @@ func _ready() -> void:
 	_back.pressed.connect(_dismiss)
 	hide()
 
-func _unhandled_input(event: InputEvent) -> void:
-	if not visible or _revealing:
-		return
-	if event.is_action_pressed(&"ui_cancel") or event.is_action_pressed(&"ui_accept"):
-		_dismiss()
-		get_viewport().set_input_as_handled()
 
 ## Call this instead of show(). Frame and header appear at once; rows paint in.
 func reveal() -> void:
