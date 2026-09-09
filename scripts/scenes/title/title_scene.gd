@@ -5,14 +5,18 @@
 ## `UI` CanvasLayer holds a 2D overlay on top of that 3D world.
 ##
 ## The menu is a four-row list of plain Containers (no Button node, no
-## unique names anywhere in the tree — see TitleScene.tscn's
-## `UI/Root/MenuPanel/Column/ItemPadding/Items`), each row shaped:
-##   PanelContainer (MenuItemSelected/MenuItemNormal/MenuItemDisabled)
+## unique names anywhere in the tree except `Hint/Cursor` — see
+## TitleScene.tscn's `UI/Root/MenuPanel/Column/ItemPadding/Items`), each
+## row shaped:
+##   PanelContainer (MenuItemSelected/MenuItemNormal — no disabled
+##                    variant; a disabled row's panel just stays
+##                    MenuItemNormal, same as an unselected enabled row)
 ##     HBoxContainer "Row"
-##       Label "Caret"  (CaretSelected/CaretNormal — no disabled variant;
-##                        a disabled row's caret just stays CaretNormal,
-##                        since it can never become selected)
-##       Label "Name"   (MenuSelected/MenuNormal/MenuDisabled)
+##       Label "Caret"  (CaretSelected/CaretNormal — no disabled variant
+##                        either, for the same reason: it can never
+##                        become selected)
+##       Label "Name"   (MenuSelected/MenuNormal/MenuDisabled — the only
+##                        one of the three with a real disabled look)
 ##       Label "Meta"   (MetaLabel; visible = false when unused)
 ## All state — highlight AND disabled/enabled — is driven entirely by
 ## swapping `theme_type_variation` on those three labels/panel from here;
@@ -42,19 +46,16 @@
 ## save detection (§12.2/§7) is real. `New Game` is still "always shown,
 ## always enabled, never gated by save state" (§12.2).
 ##
-## NOTE for theme authoring: `theme/ui_theme.tres` defines `MenuDisabled`
-## (Label) but has no `MenuItemDisabled` (PanelContainer) entry yet, so a
-## disabled row's panel currently falls back to whatever
-## `theme_type_variation = &"MenuItemDisabled"` resolves to when the
-## variation is missing (Godot's default PanelContainer style) rather than
-## a genuinely dimmed panel — only the Name label actually dims. Flagging
-## rather than inventing a style here, since the visual treatment (border/
-## fill color for a disabled panel) isn't specified.
-##
 ## `Hint/Cursor` (the ColorRect standing in for an old-terminal-style
 ## blinking caret next to the "↑↓ SELECT · RETURN CONFIRM" hint) blinks
-## via a looping Tween started in _ready() — a hard show/hide toggle, not
-## a fade, to read as a blocky terminal cursor rather than a soft pulse.
+## by toggling `modulate.a` between 0 and 1 on a loop — not `visible`,
+## because Cursor sits in an HBoxContainer next to the hint text, and an
+## invisible Control drops out of container layout entirely; toggling
+## `visible` made the Hint row itself resize every half-second as the
+## container reflowed around the cursor's absence/presence. Alpha keeps
+## the Control "there" (still taking up its layout slot) while making it
+## disappear visually. It's a hard cut (no tweened fade) so it still reads
+## as a blocky terminal caret rather than a soft pulse.
 class_name TitleScene
 extends Scene
 
@@ -63,17 +64,13 @@ enum MenuItem { NEW_GAME, CONTINUE, SETTINGS, CREDITS }
 
 const ITEMS_PATH: NodePath = ^"UI/Root/MenuPanel/Column/ItemPadding/Items"
 
-## No node in TitleScene.tscn has unique_name_in_owner set (deliberately,
-## per this file's own convention above) — `%Cursor` would fail to
-## resolve, so this is looked up by explicit path like everything else.
-const CURSOR_PATH: NodePath = ^"UI/Root/Hint/Cursor"
-
 ## How long the cursor stays visible/hidden per blink phase. 0.5s reads as
 ## a classic ~1Hz terminal-caret blink rather than something frantic.
 const CURSOR_BLINK_PHASE_SEC: float = 0.5
 
-## the cursor element
-var _cursor: ColorRect
+## `Hint/Cursor` is the one node in TitleScene.tscn with
+## unique_name_in_owner set.
+@onready var _cursor: ColorRect = %Cursor
 
 ## Row -> {panel, caret, name_label, disabled} node refs, indexed by
 ## MenuItem. Built once in _ready() from whatever children ITEMS_PATH
@@ -88,8 +85,6 @@ var _selected: int = MenuItem.NEW_GAME
 
 
 func _ready() -> void:
-	_cursor = get_node(CURSOR_PATH) as ColorRect
-
 	var items: Node = get_node(ITEMS_PATH)
 	var children: Array = items.get_children()
 	for i in children.size():
@@ -97,7 +92,7 @@ func _ready() -> void:
 		var row: HBoxContainer = panel.get_node(^"Row") as HBoxContainer
 		row.mouse_filter = Control.MOUSE_FILTER_IGNORE  # let clicks bubble to `panel`
 
-		var disabled: bool = i == MenuItem.SETTINGS or i == MenuItem.CREDITS
+		var disabled: bool = i == MenuItem.SETTINGS
 
 		_rows.append({
 			"panel": panel,
@@ -122,9 +117,9 @@ func _ready() -> void:
 
 	# Every row needs its style set at init, not just the selected one —
 	# otherwise Settings/Credits keep whatever theme_type_variation was
-	# baked into the .tscn (MenuItemNormal/MenuNormal) instead of actually
-	# switching to MenuItemDisabled/MenuDisabled, even though `disabled`
-	# is correctly true in `_rows`. This was the bug: only the initially-
+	# baked into the .tscn (MenuNormal on the Name label) instead of
+	# actually switching to MenuDisabled, even though `disabled` is
+	# correctly true in `_rows`. This was the bug: only the initially-
 	# selected row was ever visited here before.
 	for i in _rows.size():
 		_apply_row_style(i, i == _selected)
@@ -191,15 +186,17 @@ func _next_enabled_index(from: int, delta: int) -> int:
 
 ## Swaps the panel/caret/name theme_type_variations for `index` between its
 ## disabled / selected / normal states. `is_selected` only matters when the
-## row isn't disabled — a disabled row is never drawn as selected.
+## row isn't disabled — a disabled row is never drawn as selected. There's
+## no MenuItemDisabled/CaretDisabled in the theme — only the Name label has
+## a real disabled look (MenuDisabled); a disabled row's panel and caret
+## just render the same as an unselected enabled row.
 func _apply_row_style(index: int, is_selected: bool = true) -> void:
 	var row: Dictionary = _rows[index]
 	var disabled: bool = row["disabled"]
 	var selected: bool = is_selected and not disabled
 
 	(row["panel"] as PanelContainer).theme_type_variation = (
-		&"MenuItemDisabled" if disabled
-		else (&"MenuItemSelected" if selected else &"MenuItemNormal")
+		&"MenuItemSelected" if selected else &"MenuItemNormal"
 	)
 	(row["caret"] as Label).theme_type_variation = (
 		&"CaretSelected" if selected else &"CaretNormal"
@@ -210,17 +207,21 @@ func _apply_row_style(index: int, is_selected: bool = true) -> void:
 	)
 
 
-## Hard show/hide toggle on a loop, rather than a fade — an old terminal
-## caret snaps on/off, it doesn't pulse. The Tween is created on `self`
+## Toggles `_cursor.modulate.a` between 0 and 1 on a loop — see the header
+## comment for why alpha and not `visible`. The Tween is created on `self`
 ## (this Scene node), so it's owned by and stops with the scene the normal
 ## way; nothing to clean up in on_exit().
 func _start_cursor_blink() -> void:
 	var tween: Tween = create_tween()
 	tween.set_loops()
 	tween.tween_interval(CURSOR_BLINK_PHASE_SEC)
-	tween.tween_callback(_cursor.hide)
+	tween.tween_callback(_set_cursor_alpha.bind(0.0))
 	tween.tween_interval(CURSOR_BLINK_PHASE_SEC)
-	tween.tween_callback(_cursor.show)
+	tween.tween_callback(_set_cursor_alpha.bind(1.0))
+
+
+func _set_cursor_alpha(alpha: float) -> void:
+	_cursor.modulate.a = alpha
 
 
 ## NOTE: CharacterCreationScene doesn't exist yet (next step after this
