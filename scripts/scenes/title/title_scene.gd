@@ -56,6 +56,22 @@
 ## the Control "there" (still taking up its layout slot) while making it
 ## disappear visually. It's a hard cut (no tweened fade) so it still reads
 ## as a blocky terminal caret rather than a soft pulse.
+##
+## `Credits` now does something real: `UI/Root/CreditsPanel` (a
+## [CreditsPanel] instance, res://scenes/title/credits_panel.tscn) sits in
+## the exact same rect as `MenuPanel` and swaps with it — MenuPanel hides,
+## CreditsPanel.reveal()'s stepped line-by-line paint-in runs, nothing
+## else on the title screen moves. Coming back is the reverse: CreditsPanel
+## emits `dismissed` (from its own BackButton), MenuPanel shows again.
+## While `_credits_active` is true, do_action() ignores ui_up/ui_down/
+## ui_confirm entirely — CreditsPanel's BackButton has its own Godot-focus
+## Enter/click handling (grabbed via `_back.grab_focus()` at the end of
+## reveal()), which runs during normal GUI input, ahead of this scene's
+## custom key-routing. But nothing stops an Up/Down that the focus system
+## doesn't consume from falling through to `_unhandled_key_input` and
+## reaching this scene's do_action() anyway — without the guard, that
+## would silently move the *hidden* main menu's selection underneath the
+## credits panel.
 class_name TitleScene
 extends Scene
 
@@ -71,6 +87,18 @@ const CURSOR_BLINK_PHASE_SEC: float = 0.5
 ## `Hint/Cursor` is the one node in TitleScene.tscn with
 ## unique_name_in_owner set.
 @onready var _cursor: ColorRect = %Cursor
+
+## Sibling nodes under UI/Root that swap with each other — never both
+## visible at once. No unique names on either (see header comment), so
+## these are plain `$Path` lookups like everything else that isn't Cursor.
+@onready var _menu_panel: PanelContainer = %MenuPanel
+@onready var _credits_panel: CreditsPanel = %CreditsPanel
+
+## True for as long as CreditsPanel is the visible one. Gates do_action()
+## so a stray Up/Down that CreditsPanel's own focus/GUI-input handling
+## doesn't consume can't reach the hidden main menu underneath — see
+## header comment.
+var _credits_active: bool = false
 
 ## Row -> {panel, caret, name_label, disabled} node refs, indexed by
 ## MenuItem. Built once in _ready() from whatever children ITEMS_PATH
@@ -99,7 +127,7 @@ func _ready() -> void:
 			"caret": row.get_node(^"Caret") as Label,
 			"name_label": row.get_node(^"Name") as Label,
 			"disabled": disabled,
-		})
+			})
 
 		panel.mouse_default_cursor_shape = (
 			Control.CURSOR_ARROW if disabled else Control.CURSOR_POINTING_HAND
@@ -124,6 +152,8 @@ func _ready() -> void:
 	for i in _rows.size():
 		_apply_row_style(i, i == _selected)
 
+	_credits_panel.dismissed.connect(_on_credits_dismissed)
+
 	_start_cursor_blink()
 
 
@@ -133,6 +163,8 @@ func _ready() -> void:
 func do_action(action: GameAction) -> void:
 	if not action.is_pressed():
 		return
+	if _credits_active:
+		return  # CreditsPanel's own BackButton owns input right now.
 
 	match action.name:
 		"ui_up":
@@ -238,8 +270,28 @@ func _confirm_selection() -> void:
 	match _selected:
 		MenuItem.NEW_GAME:
 			_game_engine.change_scene("CharacterCreation", "res://scenes/CharacterCreation.tscn")
+		MenuItem.CREDITS:
+			_show_credits()
 		_:
 			# Continue: visible, enabled, and navigable, but still blocked
 			# on save-existence detection (§12.2/§7), which doesn't exist
-			# yet. Logged rather than silent so the gap stays visible.
+			# yet. (Settings can't reach this match at all — it's disabled,
+			# caught by the guard above.) Logged rather than silent so the
+			# gap stays visible.
 			push_warning("TitleScene: '%s' selected but not implemented yet." % MenuItem.keys()[_selected])
+
+
+## Swaps MenuPanel out for CreditsPanel in the same rect. reveal() runs its
+## own stepped paint-in and ends by grabbing focus on its BackButton.
+func _show_credits() -> void:
+	_credits_active = true
+	_menu_panel.hide()
+	_credits_panel.reveal()
+
+
+## CreditsPanel already hid itself (hide_panel()/_dismiss() both call
+## hide() before emitting) — just swap MenuPanel back in and hand keyboard
+## input back to do_action().
+func _on_credits_dismissed() -> void:
+	_menu_panel.show()
+	_credits_active = false

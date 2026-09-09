@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://bdhd20t46d4e" path="res://assets/modeling/dioramas/mountain_landscape.glb" id="2_n8eu1"]
 [ext_resource type="Script" uid="uid://b7vwy54v8l8ek" path="res://scripts/rendering/diorama_wireframe_shader.gd" id="3_n8eu1"]
 [ext_resource type="PackedScene" uid="uid://d2rilr4kmovj2" path="res://assets/modeling/dioramas/tunnel.glb" id="4_yjbx8"]
+[ext_resource type="PackedScene" uid="uid://dctn7nvtb18d4" path="res://scenes/title/credits_panel.tscn" id="5_rlwov"]
 
 [sub_resource type="Environment" id="Environment_or0ta"]
 
@@ -76,6 +77,7 @@ theme_type_variation = &"TagLabel"
 text = "A DUNGEON IN FOUR HUNDRED LINES"
 
 [node name="MenuPanel" type="PanelContainer" parent="UI/Root" unique_id=871475180]
+unique_name_in_owner = true
 layout_mode = 1
 offset_left = 96.0
 offset_top = 266.0
@@ -203,6 +205,11 @@ text = "CREDITS"
 visible = false
 layout_mode = 2
 theme_type_variation = &"MetaLabel"
+
+[node name="CreditsPanel" parent="UI/Root" unique_id=532806836 instance=ExtResource("5_rlwov")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
 
 [node name="Hint" type="HBoxContainer" parent="UI/Root" unique_id=755112728]
 layout_mode = 1
