@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://wp7qtrhgu64o"]
+
+[ext_resource type="Script" uid="uid://dg1o4fiva2jnr" path="res://scripts/scenes/character_creation/character_creation_scene.gd" id="1_bdhjp"]
+
+[node name="CharacterCreation" type="Node2D" unique_id=1120151790]
+script = ExtResource("1_bdhjp")
