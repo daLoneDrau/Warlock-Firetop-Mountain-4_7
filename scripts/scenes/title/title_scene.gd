@@ -72,6 +72,24 @@
 ## reaching this scene's do_action() anyway — without the guard, that
 ## would silently move the *hidden* main menu's selection underneath the
 ## credits panel.
+##
+## Escape is the other way out of the credits panel, alongside the Back
+## button — checked first in do_action(), before the `_credits_active`
+## guard, so it's the one action that still works while that guard is up.
+## Escape while the main menu itself is showing is a no-op for now; there's
+## nothing else on this screen for it to back out of. Dismissing via
+## Escape calls `_credits_panel.hide_panel()` directly rather than routing
+## through `_dismiss()`/the `dismissed` signal the Back button uses —
+## `hide_panel()` is CreditsPanel's own public instant-hide entry point,
+## so this stays a call to CreditsPanel's public API rather than reaching
+## into its private `_dismiss()`. `_dismiss_credits()` here just mirrors
+## `_on_credits_dismissed()`'s menu-restoring half locally, since no
+## signal fires on this path.
+##
+## `Hint/Text` reads "ESC BACK" while the credits panel is up, and reverts
+## to its authored text (captured once in _ready(), not hardcoded a second
+## time here) once it's dismissed — same hint row, no layout change,
+## since only the label's text changes, not the Hint container itself.
 class_name TitleScene
 extends Scene
 
@@ -84,9 +102,23 @@ const ITEMS_PATH: NodePath = ^"UI/Root/MenuPanel/Column/ItemPadding/Items"
 ## a classic ~1Hz terminal-caret blink rather than something frantic.
 const CURSOR_BLINK_PHASE_SEC: float = 0.5
 
+## What `Hint/Text` shows while the credits panel is up. Its normal text
+## ("↑↓ SELECT · RETURN CONFIRM") isn't duplicated as a constant here —
+## it's read back from the node itself in _ready() and restored from that,
+## so this script isn't a second source of truth for that string.
+const CREDITS_HINT_TEXT := "ESC BACK"
+
 ## `Hint/Cursor` is the one node in TitleScene.tscn with
 ## unique_name_in_owner set.
 @onready var _cursor: ColorRect = %Cursor
+
+## Not unique-named (see header comment) — plain `$Path` lookup.
+@onready var _hint_text: Label = $UI/Root/Hint/Text
+
+## Captured once in _ready() from `_hint_text.text` itself, so swapping to
+## CREDITS_HINT_TEXT and back doesn't require hardcoding the normal hint
+## string a second time here.
+var _default_hint_text: String = ""
 
 ## Sibling nodes under UI/Root that swap with each other — never both
 ## visible at once. No unique names on either (see header comment), so
@@ -127,7 +159,7 @@ func _ready() -> void:
 			"caret": row.get_node(^"Caret") as Label,
 			"name_label": row.get_node(^"Name") as Label,
 			"disabled": disabled,
-			})
+		})
 
 		panel.mouse_default_cursor_shape = (
 			Control.CURSOR_ARROW if disabled else Control.CURSOR_POINTING_HAND
@@ -139,6 +171,9 @@ func _ready() -> void:
 	register_action("Up", "ui_up")
 	register_action("Down", "ui_down")
 	register_action("Enter", "ui_confirm")
+	register_action("Escape", "ui_cancel")
+
+	_default_hint_text = _hint_text.text
 
 	if _rows[_selected]["disabled"]:
 		_selected = _next_enabled_index(_selected, 1)
@@ -158,11 +193,18 @@ func _ready() -> void:
 
 
 ## Routes ui_up/ui_down to move the highlighted row, ui_confirm to act on
-## whichever row is currently selected. Only reacts on key-down (START) so
-## releasing Up/Down/Enter doesn't double-fire.
+## whichever row is currently selected, and ui_cancel (Escape) to back out
+## of the credits panel if it's the thing currently showing. Only reacts
+## on key-down (START) so releasing a key doesn't double-fire.
 func do_action(action: GameAction) -> void:
 	if not action.is_pressed():
 		return
+
+	if action.name == "ui_cancel":
+		if _credits_active:
+			_dismiss_credits()
+		return  # No-op on the main menu — nothing else to back out of yet.
+
 	if _credits_active:
 		return  # CreditsPanel's own BackButton owns input right now.
 
@@ -281,17 +323,29 @@ func _confirm_selection() -> void:
 			push_warning("TitleScene: '%s' selected but not implemented yet." % MenuItem.keys()[_selected])
 
 
-## Swaps MenuPanel out for CreditsPanel in the same rect. reveal() runs its
-## own stepped paint-in and ends by grabbing focus on its BackButton.
+## Swaps MenuPanel out for CreditsPanel in the same rect, and the hint text
+## to match. reveal() runs its own stepped paint-in and ends by grabbing
+## focus on its BackButton.
 func _show_credits() -> void:
 	_credits_active = true
 	_menu_panel.hide()
+	_hint_text.text = CREDITS_HINT_TEXT
 	_credits_panel.reveal()
 
 
 ## CreditsPanel already hid itself (hide_panel()/_dismiss() both call
-## hide() before emitting) — just swap MenuPanel back in and hand keyboard
-## input back to do_action().
+## hide() before emitting) — just swap MenuPanel and the hint text back,
+## and hand keyboard input back to do_action(). Reached via the `dismissed`
+## signal (Back button path).
 func _on_credits_dismissed() -> void:
 	_menu_panel.show()
+	_hint_text.text = _default_hint_text
 	_credits_active = false
+
+
+## Escape path: CreditsPanel has no signal for this, so hide it directly
+## via its public hide_panel() (not the private _dismiss() the Back button
+## uses) and mirror _on_credits_dismissed()'s menu-restoring half locally.
+func _dismiss_credits() -> void:
+	_credits_panel.hide_panel()
+	_on_credits_dismissed()
