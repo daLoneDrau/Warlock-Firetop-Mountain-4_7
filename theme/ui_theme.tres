@@ -2,9 +2,10 @@
 
 [ext_resource type="FontFile" uid="uid://popgvuq08tka" path="res://assets/fonts/static/IBMPlexSans-Medium.ttf" id="1_7uusv"]
 [ext_resource type="FontFile" uid="uid://b8gc6gc8cnatm" path="res://assets/fonts/static/IBMPlexSans-Regular.ttf" id="1_27v6b"]
-[ext_resource type="FontFile" uid="uid://gbhcivmh1u3u" path="res://assets/fonts/static/IBMPlexSans-Bold.ttf" id="3_8aw70"]
 [ext_resource type="FontFile" uid="uid://cejlmhs7gknrd" path="res://assets/fonts/static/IBMPlexSans-SemiBold.ttf" id="3_eqcwn"]
 [ext_resource type="FontFile" uid="uid://il6sdh85g31p" path="res://assets/fonts/IBMPlexMono-Regular.ttf" id="4_6r5ox"]
+[ext_resource type="FontFile" uid="uid://dlfoqsjdxwxj8" path="res://assets/fonts/Silkscreen-Regular.ttf" id="5_es402"]
+[ext_resource type="FontFile" uid="uid://booejhsey0n4a" path="res://assets/fonts/VT323-Regular.ttf" id="6_es402"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n8eu1"]
 
@@ -24,23 +25,36 @@ corner_radius_top_right = 2
 corner_radius_bottom_right = 2
 corner_radius_bottom_left = 2
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_27v6b"]
-bg_color = Color(0.109804, 0.109804, 0.109804, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_es402"]
+content_margin_left = 12.0
+content_margin_top = 7.0
+content_margin_right = 12.0
+content_margin_bottom = 7.0
+draw_center = false
+border_width_bottom = 1
+border_color = Color(0.173, 0.173, 0.173, 1)
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7p73w"]
+bg_color = Color(1, 0.69, 0, 1)
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p7mgs"]
+bg_color = Color(0.075, 0.075, 0.075, 1)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.227451, 0.227451, 0.227451, 1)
-corner_radius_top_left = 2
-corner_radius_top_right = 2
-corner_radius_bottom_right = 2
-corner_radius_bottom_left = 2
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pfl7r"]
+border_color = Color(0.227, 0.227, 0.227, 1)
+corner_detail = 1
 
 [resource]
-default_font = ExtResource("1_27v6b")
+default_font = ExtResource("6_es402")
 default_font_size = 16
+ActionCardLabel/base_type = &"Label"
+ActionCardLabel/colors/font_color = Color(0.909804, 0.909804, 0.909804, 1)
+ActionCardLabel/font_sizes/font_size = 23
+ActionCardLabel/fonts/font = ExtResource("6_es402")
 BodyLabel/base_type = &"Label"
 BodyLabel/colors/font_color = Color(0.909804, 0.909804, 0.909804, 1)
 BodyLabel/font_sizes/font_size = 16
@@ -59,26 +73,81 @@ Button/styles/focus = SubResource("StyleBoxEmpty_n8eu1")
 Button/styles/hover = SubResource("StyleBoxFlat_yjbx8")
 Button/styles/normal = SubResource("StyleBoxEmpty_n8eu1")
 Button/styles/pressed = SubResource("StyleBoxFlat_yjbx8")
+CaretNormal/base_type = &"Label"
+CaretNormal/colors/font_color = Color(0.184, 0.184, 0.184, 1)
+CaretNormal/font_sizes/font_size = 20
+CaretNormal/fonts/font = ExtResource("6_es402")
+CaretSelected/base_type = &"Label"
+CaretSelected/colors/font_color = Color(0.039, 0.039, 0.039, 1)
+CaretSelected/font_sizes/font_size = 20
+CaretSelected/fonts/font = ExtResource("6_es402")
 ChoiceButton/base_type = &"Button"
 ChoiceButton/font_sizes/font_size = 18
 ChoiceButton/fonts/font = ExtResource("1_7uusv")
+HeaderBar/base_type = &"PanelContainer"
+HeaderBar/styles/panel = SubResource("StyleBoxFlat_es402")
 HeadingLabel/base_type = &"Label"
 HeadingLabel/colors/font_color = Color(0.909804, 0.909804, 0.909804, 1)
 HeadingLabel/font_sizes/font_size = 22
 HeadingLabel/fonts/font = ExtResource("3_eqcwn")
-Label/colors/font_color = Color(0.909804, 0.909804, 0.909804, 1)
-Label/font_sizes/font_size = 16
-Label/fonts/font = ExtResource("1_27v6b")
-Panel/styles/panel = SubResource("StyleBoxFlat_27v6b")
-PanelContainer/styles/panel = SubResource("StyleBoxFlat_27v6b")
+HintLabel/base_type = &"Label"
+HintLabel/colors/font_color = Color(0.431, 0.431, 0.431, 1)
+HintLabel/font_sizes/font_size = 17
+HintLabel/fonts/font = ExtResource("6_es402")
+Hotspot/base_type = &"Label"
+Hotspot/colors/font_color = Color(0.909804, 0.909804, 0.909804, 1)
+Hotspot/font_sizes/font_size = 19
+Hotspot/fonts/font = ExtResource("6_es402")
+MenuDisabled/base_type = &"Label"
+MenuDisabled/colors/font_color = Color(0.373, 0.373, 0.373, 1)
+MenuDisabled/font_sizes/font_size = 22
+MenuDisabled/fonts/font = ExtResource("6_es402")
+MenuItem/base_type = &"Label"
+MenuItem/colors/font_color = Color(0.909804, 0.909804, 0.909804, 1)
+MenuItem/font_sizes/font_size = 22
+MenuItem/fonts/font = ExtResource("6_es402")
+MenuItemNormal/base_type = &"PanelContainer"
+MenuItemNormal/styles/panel = SubResource("StyleBoxEmpty_n8eu1")
+MenuItemSelected/base_type = &"PanelContainer"
+MenuItemSelected/styles/panel = SubResource("StyleBoxFlat_7p73w")
+MenuNormal/base_type = &"Label"
+MenuNormal/colors/font_color = Color(0.725, 0.725, 0.725, 1)
+MenuNormal/font_sizes/font_size = 22
+MenuNormal/fonts/font = ExtResource("6_es402")
+MenuPanel/base_type = &"PanelContainer"
+MenuPanel/styles/panel = SubResource("StyleBoxFlat_p7mgs")
+MenuSelected/base_type = &"Label"
+MenuSelected/colors/font_color = Color(0.039, 0.039, 0.039, 1)
+MenuSelected/font_sizes/font_size = 22
+MenuSelected/fonts/font = ExtResource("6_es402")
+MetaLabel/base_type = &"Label"
+MetaLabel/colors/font_color = Color(0.788, 0.541, 0.071, 1)
+MetaLabel/font_sizes/font_size = 15
+MetaLabel/fonts/font = ExtResource("6_es402")
+PanelHeader/base_type = &"Label"
+PanelHeader/colors/font_color = Color(0.431, 0.431, 0.431, 1)
+PanelHeader/font_sizes/font_size = 16
+PanelHeader/fonts/font = ExtResource("6_es402")
+RequirementTag/base_type = &"Label"
+RequirementTag/colors/font_color = Color(0.909804, 0.909804, 0.909804, 1)
+RequirementTag/font_sizes/font_size = 15
+RequirementTag/fonts/font = ExtResource("6_es402")
 RequirementTagLabel/base_type = &"Label"
 RequirementTagLabel/colors/font_color = Color(1, 0.701961, 0.278431, 1)
 RequirementTagLabel/font_sizes/font_size = 16
 RequirementTagLabel/fonts/font = ExtResource("1_27v6b")
+SectionHeader/base_type = &"Label"
+SectionHeader/colors/font_color = Color(0.909804, 0.909804, 0.909804, 1)
+SectionHeader/font_sizes/font_size = 16
+SectionHeader/fonts/font = ExtResource("6_es402")
 SmallPrintLabel/base_type = &"Label"
 SmallPrintLabel/colors/font_color = Color(0.909804, 0.909804, 0.909804, 1)
 SmallPrintLabel/font_sizes/font_size = 12
 SmallPrintLabel/fonts/font = ExtResource("1_27v6b")
+StatLabel/base_type = &"Label"
+StatLabel/colors/font_color = Color(0.909804, 0.909804, 0.909804, 1)
+StatLabel/font_sizes/font_size = 18
+StatLabel/fonts/font = ExtResource("6_es402")
 StatLabelLabel/base_type = &"Label"
 StatLabelLabel/colors/font_color = Color(0.909804, 0.909804, 0.909804, 1)
 StatLabelLabel/font_sizes/font_size = 16
@@ -87,7 +156,15 @@ StatValueLabel/base_type = &"Label"
 StatValueLabel/colors/font_color = Color(1, 0.701961, 0.278431, 1)
 StatValueLabel/font_sizes/font_size = 20
 StatValueLabel/fonts/font = ExtResource("4_6r5ox")
+StatusBar/base_type = &"Label"
+StatusBar/colors/font_color = Color(0.909804, 0.909804, 0.909804, 1)
+StatusBar/font_sizes/font_size = 17
+StatusBar/fonts/font = ExtResource("6_es402")
 TitleLabel/base_type = &"Label"
-TitleLabel/colors/font_color = Color(0.909804, 0.909804, 0.909804, 1)
-TitleLabel/font_sizes/font_size = 42
-TitleLabel/fonts/font = ExtResource("3_8aw70")
+TitleLabel/colors/font_color = Color(1, 0.69, 0, 1)
+TitleLabel/font_sizes/font_size = 44
+TitleLabel/fonts/font = ExtResource("5_es402")
+VersionLabel/base_type = &"Label"
+VersionLabel/colors/font_color = Color(0.29, 0.29, 0.29, 1)
+VersionLabel/font_sizes/font_size = 16
+VersionLabel/fonts/font = ExtResource("6_es402")

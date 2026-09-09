@@ -6,6 +6,9 @@ extends Node
 
 const WIREFRAME_SHADER: Shader = preload("res://shaders/wireframe_barycentric.gdshader")
 
+## the line width used in the wireframe shader
+@export var lineWidth: float = 1.5
+
 
 func _ready() -> void:
 	var root: Node = get_parent()
@@ -31,5 +34,5 @@ func _shade_mesh_instance(mesh_instance: MeshInstance3D) -> void:
 	mat.shader = WIREFRAME_SHADER
 	mat.set_shader_parameter("fill_color", StyleGuideColors.FILL_NEAR_BLACK)
 	mat.set_shader_parameter("line_color", StyleGuideColors.WIREFRAME_AMBER)
-	mat.set_shader_parameter("line_width", 1.5)
+	mat.set_shader_parameter("line_width", lineWidth)
 	mesh_instance.material_override = mat
