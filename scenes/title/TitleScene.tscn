@@ -1,0 +1,247 @@
+[gd_scene format=3 uid="uid://gcqiqslpiwc0"]
+
+[ext_resource type="Script" uid="uid://b8o4yvscr85l4" path="res://scripts/title/title_scene.gd" id="1_lx1li"]
+[ext_resource type="PackedScene" uid="uid://bdhd20t46d4e" path="res://assets/modeling/dioramas/mountain_landscape.glb" id="2_n8eu1"]
+[ext_resource type="Script" uid="uid://b7vwy54v8l8ek" path="res://scripts/rendering/diorama_wireframe_shader.gd" id="3_n8eu1"]
+[ext_resource type="PackedScene" uid="uid://d2rilr4kmovj2" path="res://assets/modeling/dioramas/tunnel.glb" id="4_yjbx8"]
+
+[sub_resource type="Environment" id="Environment_or0ta"]
+
+[node name="Title" type="Node3D" unique_id=1894092599]
+script = ExtResource("1_lx1li")
+
+[node name="World" type="Node3D" parent="." unique_id=77082298]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="World" unique_id=74021266]
+environment = SubResource("Environment_or0ta")
+
+[node name="Camera3D" type="Camera3D" parent="World" unique_id=1111662509]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5368408, 5.9924316)
+fov = 55.0
+
+[node name="mountain_landscape" parent="World" unique_id=98308533 instance=ExtResource("2_n8eu1")]
+
+[node name="DioramaWireframeShader" type="Node" parent="World/mountain_landscape" unique_id=1836880745]
+script = ExtResource("3_n8eu1")
+
+[node name="tunnel" parent="World" unique_id=698348263 instance=ExtResource("4_yjbx8")]
+visible = false
+
+[node name="DioramaWireframeShader" type="Node" parent="World/tunnel" unique_id=1965919672]
+script = ExtResource("3_n8eu1")
+
+[node name="UI" type="CanvasLayer" parent="." unique_id=1554354976]
+
+[node name="Root" type="Control" parent="UI" unique_id=338763357]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="TitleBlock" type="VBoxContainer" parent="UI/Root" unique_id=1580227106]
+layout_mode = 1
+offset_left = 96.0
+offset_top = 78.0
+offset_right = 560.0
+offset_bottom = 190.0
+mouse_filter = 2
+theme_override_constants/separation = 14
+
+[node name="TitlePanel" type="PanelContainer" parent="UI/Root/TitleBlock" unique_id=970388294]
+layout_mode = 2
+
+[node name="TitleMargin" type="MarginContainer" parent="UI/Root/TitleBlock/TitlePanel" unique_id=1189981739]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/Root/TitleBlock/TitlePanel/TitleMargin" unique_id=291581267]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Wordmark" type="Label" parent="UI/Root/TitleBlock/TitlePanel/TitleMargin/VBoxContainer" unique_id=1194966445]
+layout_mode = 2
+theme_type_variation = &"TitleLabel"
+text = "THE WARLOCK OF
+FIRETOP MOUNTAIN"
+
+[node name="Tagline" type="Label" parent="UI/Root/TitleBlock/TitlePanel/TitleMargin/VBoxContainer" unique_id=1301854365]
+layout_mode = 2
+theme_type_variation = &"TagLabel"
+text = "A DUNGEON IN FOUR HUNDRED LINES"
+
+[node name="MenuPanel" type="PanelContainer" parent="UI/Root" unique_id=871475180]
+layout_mode = 1
+offset_left = 96.0
+offset_top = 266.0
+offset_right = 396.0
+offset_bottom = 434.0
+theme_type_variation = &"MenuPanel"
+
+[node name="Column" type="VBoxContainer" parent="UI/Root/MenuPanel" unique_id=667773306]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="HeaderBar" type="PanelContainer" parent="UI/Root/MenuPanel/Column" unique_id=356487579]
+layout_mode = 2
+theme_type_variation = &"HeaderBar"
+
+[node name="Header" type="Label" parent="UI/Root/MenuPanel/Column/HeaderBar" unique_id=491532286]
+layout_mode = 2
+theme_type_variation = &"PanelHeader"
+theme_override_constants/line_spacing = 0
+text = "MAIN MENU"
+
+[node name="ItemPadding" type="MarginContainer" parent="UI/Root/MenuPanel/Column" unique_id=233829108]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="Items" type="VBoxContainer" parent="UI/Root/MenuPanel/Column/ItemPadding" unique_id=1174273662]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Item0" type="PanelContainer" parent="UI/Root/MenuPanel/Column/ItemPadding/Items" unique_id=684902046]
+layout_mode = 2
+theme_type_variation = &"MenuItemSelected"
+
+[node name="Row" type="HBoxContainer" parent="UI/Root/MenuPanel/Column/ItemPadding/Items/Item0" unique_id=1068525423]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Caret" type="Label" parent="UI/Root/MenuPanel/Column/ItemPadding/Items/Item0/Row" unique_id=881756853]
+layout_mode = 2
+theme_type_variation = &"CaretSelected"
+text = "▸"
+
+[node name="Name" type="Label" parent="UI/Root/MenuPanel/Column/ItemPadding/Items/Item0/Row" unique_id=424592601]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"MenuSelected"
+text = "NEW GAME"
+
+[node name="Meta" type="Label" parent="UI/Root/MenuPanel/Column/ItemPadding/Items/Item0/Row" unique_id=1170343864]
+visible = false
+layout_mode = 2
+theme_type_variation = &"MetaLabel"
+
+[node name="Item1" type="PanelContainer" parent="UI/Root/MenuPanel/Column/ItemPadding/Items" unique_id=1857026554]
+layout_mode = 2
+theme_type_variation = &"MenuItemNormal"
+
+[node name="Row" type="HBoxContainer" parent="UI/Root/MenuPanel/Column/ItemPadding/Items/Item1" unique_id=205545936]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Caret" type="Label" parent="UI/Root/MenuPanel/Column/ItemPadding/Items/Item1/Row" unique_id=927630499]
+layout_mode = 2
+theme_type_variation = &"CaretNormal"
+text = "▸"
+
+[node name="Name" type="Label" parent="UI/Root/MenuPanel/Column/ItemPadding/Items/Item1/Row" unique_id=1987035536]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"MenuNormal"
+text = "CONTINUE"
+
+[node name="Meta" type="Label" parent="UI/Root/MenuPanel/Column/ItemPadding/Items/Item1/Row" unique_id=710467486]
+layout_mode = 2
+theme_type_variation = &"MetaLabel"
+text = "DEPTH 3"
+
+[node name="Item2" type="PanelContainer" parent="UI/Root/MenuPanel/Column/ItemPadding/Items" unique_id=1976071578]
+layout_mode = 2
+theme_type_variation = &"MenuItemNormal"
+
+[node name="Row" type="HBoxContainer" parent="UI/Root/MenuPanel/Column/ItemPadding/Items/Item2" unique_id=1274080065]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Caret" type="Label" parent="UI/Root/MenuPanel/Column/ItemPadding/Items/Item2/Row" unique_id=1047234581]
+layout_mode = 2
+theme_type_variation = &"CaretNormal"
+text = "▸"
+
+[node name="Name" type="Label" parent="UI/Root/MenuPanel/Column/ItemPadding/Items/Item2/Row" unique_id=788401978]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"MenuNormal"
+text = "SETTINGS"
+
+[node name="Meta" type="Label" parent="UI/Root/MenuPanel/Column/ItemPadding/Items/Item2/Row" unique_id=225475636]
+visible = false
+layout_mode = 2
+theme_type_variation = &"MetaLabel"
+
+[node name="Item3" type="PanelContainer" parent="UI/Root/MenuPanel/Column/ItemPadding/Items" unique_id=1328683319]
+layout_mode = 2
+theme_type_variation = &"MenuItemNormal"
+
+[node name="Row" type="HBoxContainer" parent="UI/Root/MenuPanel/Column/ItemPadding/Items/Item3" unique_id=658555871]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Caret" type="Label" parent="UI/Root/MenuPanel/Column/ItemPadding/Items/Item3/Row" unique_id=143704481]
+layout_mode = 2
+theme_type_variation = &"CaretNormal"
+text = "▸"
+
+[node name="Name" type="Label" parent="UI/Root/MenuPanel/Column/ItemPadding/Items/Item3/Row" unique_id=342366125]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"MenuNormal"
+text = "CREDITS"
+
+[node name="Meta" type="Label" parent="UI/Root/MenuPanel/Column/ItemPadding/Items/Item3/Row" unique_id=270110304]
+visible = false
+layout_mode = 2
+theme_type_variation = &"MetaLabel"
+
+[node name="Hint" type="HBoxContainer" parent="UI/Root" unique_id=755112728]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 96.0
+offset_top = -46.0
+offset_right = 500.0
+offset_bottom = -22.0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="Text" type="Label" parent="UI/Root/Hint" unique_id=648699392]
+layout_mode = 2
+theme_type_variation = &"HintLabel"
+text = "↑↓ SELECT · RETURN CONFIRM"
+
+[node name="Cursor" type="ColorRect" parent="UI/Root/Hint" unique_id=1970467618]
+custom_minimum_size = Vector2(9, 16)
+layout_mode = 2
+size_flags_vertical = 4
+color = Color(1, 0.69, 0, 1)
+
+[node name="Version" type="Label" parent="UI/Root" unique_id=848912994]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -200.0
+offset_top = -46.0
+offset_right = -26.0
+offset_bottom = -22.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_type_variation = &"VersionLabel"
+text = "V0.3 · 48K"
+horizontal_alignment = 2
