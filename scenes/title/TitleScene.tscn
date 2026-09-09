@@ -42,6 +42,15 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
+[node name="Scrim" type="ColorRect" parent="UI/Root" unique_id=387647632]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.10980392, 0.10980392, 0.10980392, 0.7019608)
+
 [node name="TitleBlock" type="VBoxContainer" parent="UI/Root" unique_id=1580227106]
 layout_mode = 1
 offset_left = 96.0
@@ -51,27 +60,13 @@ offset_bottom = 190.0
 mouse_filter = 2
 theme_override_constants/separation = 14
 
-[node name="TitlePanel" type="PanelContainer" parent="UI/Root/TitleBlock" unique_id=970388294]
-layout_mode = 2
-
-[node name="TitleMargin" type="MarginContainer" parent="UI/Root/TitleBlock/TitlePanel" unique_id=1189981739]
-layout_mode = 2
-theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 16
-theme_override_constants/margin_bottom = 8
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/Root/TitleBlock/TitlePanel/TitleMargin" unique_id=291581267]
-layout_mode = 2
-theme_override_constants/separation = 14
-
-[node name="Wordmark" type="Label" parent="UI/Root/TitleBlock/TitlePanel/TitleMargin/VBoxContainer" unique_id=1194966445]
+[node name="Wordmark" type="Label" parent="UI/Root/TitleBlock" unique_id=1194966445]
 layout_mode = 2
 theme_type_variation = &"TitleLabel"
 text = "THE WARLOCK OF
 FIRETOP MOUNTAIN"
 
-[node name="Tagline" type="Label" parent="UI/Root/TitleBlock/TitlePanel/TitleMargin/VBoxContainer" unique_id=1301854365]
+[node name="Tagline" type="Label" parent="UI/Root/TitleBlock" unique_id=1301854365]
 layout_mode = 2
 theme_type_variation = &"TagLabel"
 text = "A DUNGEON IN FOUR HUNDRED LINES"

@@ -152,7 +152,7 @@ func _ready() -> void:
 		var row: HBoxContainer = panel.get_node(^"Row") as HBoxContainer
 		row.mouse_filter = Control.MOUSE_FILTER_IGNORE  # let clicks bubble to `panel`
 
-		var disabled: bool = i == MenuItem.SETTINGS
+		var disabled: bool = i == MenuItem.SETTINGS or i == MenuItem.CONTINUE
 
 		_rows.append({
 			"panel": panel,
