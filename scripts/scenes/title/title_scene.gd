@@ -152,7 +152,7 @@ func _ready() -> void:
 		var row: HBoxContainer = panel.get_node(^"Row") as HBoxContainer
 		row.mouse_filter = Control.MOUSE_FILTER_IGNORE  # let clicks bubble to `panel`
 
-		var disabled: bool = i == MenuItem.SETTINGS or i == MenuItem.CONTINUE
+		var disabled: bool = i == MenuItem.SETTINGS
 
 		_rows.append({
 			"panel": panel,
@@ -171,6 +171,7 @@ func _ready() -> void:
 	register_action("Up", "ui_up")
 	register_action("Down", "ui_down")
 	register_action("Enter", "ui_confirm")
+	register_action("Kp Enter", "ui_confirm")
 	register_action("Escape", "ui_cancel")
 
 	_default_hint_text = _hint_text.text
