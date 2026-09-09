@@ -53,4 +53,4 @@ func _setup_window() -> void:
 ## Initial scene is now TitleScene — BootTest.tscn/boot_test.gd served
 ## their purpose (proving the boot chain) and can be deleted from the repo.
 func _start_game() -> void:
-	change_scene("Title", "res://scenes/TitleScene.tscn")
+	change_scene("Title", "res://scenes/title/TitleScene.tscn")

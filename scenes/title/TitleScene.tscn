@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://gcqiqslpiwc0"]
 
-[ext_resource type="Script" uid="uid://b8o4yvscr85l4" path="res://scripts/title/title_scene.gd" id="1_lx1li"]
+[ext_resource type="Script" uid="uid://b8o4yvscr85l4" path="res://scripts/scenes/title/title_scene.gd" id="1_lx1li"]
 [ext_resource type="PackedScene" uid="uid://bdhd20t46d4e" path="res://assets/modeling/dioramas/mountain_landscape.glb" id="2_n8eu1"]
 [ext_resource type="Script" uid="uid://b7vwy54v8l8ek" path="res://scripts/rendering/diorama_wireframe_shader.gd" id="3_n8eu1"]
 [ext_resource type="PackedScene" uid="uid://d2rilr4kmovj2" path="res://assets/modeling/dioramas/tunnel.glb" id="4_yjbx8"]
