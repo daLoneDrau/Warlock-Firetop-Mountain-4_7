@@ -71,8 +71,11 @@ func send_init_script_event(_entity: Entity) -> void:
 ## Skill/Luck, [WarlockHealthComponent] for Stamina (per §13.1, Stamina
 ## lives on HealthComponent, not the AbilityScore/modifier-stack system),
 ## [PlayerComponent] for the session-state fields nothing populates yet,
-## and a [WarlockScriptComponent] running [PlayerScript] (currently a
-## dummy ScriptEvent.INITIALIZED handler — see player_script.gd).
+## [WarlockInventoryComponent] (unbounded, per §13.2 — empty until
+## CharacterCreationScene's Descend grants the chosen potion via
+## WarlockInventorySystem.add_item()), and a [WarlockScriptComponent]
+## running [PlayerScript] (currently a dummy ScriptEvent.INITIALIZED
+## handler — see player_script.gd).
 ##
 ## Every component is attached to the [Entity] object directly
 ## (entity.set_component(), not this class's own add_component()) BEFORE
@@ -108,9 +111,47 @@ func create_player_entity() -> String:
 	entity.set_component(health)
 
 	entity.set_component(PlayerComponent.new())
+	entity.set_component(WarlockInventoryComponent.new())
 
 	var script_component := WarlockScriptComponent.new()
 	script_component.main_script = PlayerScript.new()
+	entity.set_component(script_component)
+
+	add_entity(entity)
+	add_entity_immediately(entity.id)
+
+	return entity.id
+
+
+## Builds a potion item entity: a [WarlockItemComponent] (potion_type/
+## item_name/quantity as given — Rules_reference.md "Potions": each
+## bottle holds two measures, so callers pass quantity=2 for a freshly
+## granted potion) plus a [WarlockScriptComponent] running [PotionScript],
+## which is what actually applies the potion's effect on
+## ScriptEvent.ITEM_USED (see potion_script.gd — not wired to any "Use"
+## action yet, per its own header comment).
+##
+## Same component-before-registration ordering as create_player_entity()
+## and for the identical reason: PotionScript has to already be attached
+## when add_entity_immediately() fires entity_added, or ScriptSystem's
+## auto-attach finds nothing and the entity never gets subscribed to any
+## ScriptEvent at all.
+##
+## Returns the item entity's id — not added to anyone's inventory here;
+## that's a separate step (WarlockInventorySystem.add_item()), since this
+## method only knows how to build the item, not who's meant to receive it.
+func create_potion_entity(potion_type: StringName, item_name: String, quantity: int = 2) -> String:
+	var entity := Entity.new()
+	entity.id = uuidv4()
+
+	var item := WarlockItemComponent.new()
+	item.potion_type = potion_type
+	item.item_name = item_name
+	item.quantity = quantity
+	entity.set_component(item)
+
+	var script_component := WarlockScriptComponent.new()
+	script_component.main_script = PotionScript.new()
 	entity.set_component(script_component)
 
 	add_entity(entity)

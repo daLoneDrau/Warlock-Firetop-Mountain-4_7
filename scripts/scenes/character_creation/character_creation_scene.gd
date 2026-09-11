@@ -20,8 +20,17 @@
 ## potion names, dim by default, switching to cyan on selection) and move
 ## SelectionBracket's self-drawn corner marks as the selection changes.
 ##
-## Still open: Descend (phase 3) — granting the chosen potion to the
-## player entity and transitioning onward.
+## Roadmap phase 3 (this pass): Descend. Grants the selected potion to
+## the player entity (WarlockEntityManager.create_potion_entity() builds
+## the item, WarlockInventorySystem.add_item() puts it in the player's
+## WarlockInventoryComponent — both per §13.2) and transitions to
+## DungeonScene. DungeonScene doesn't exist as a file yet (§2 names it,
+## nothing has built it) — wired anyway rather than stubbed, mirroring
+## TitleScene's own precedent for CharacterCreationScene when that scene
+## didn't exist yet: change_scene() fails loudly (push_error) via Godot's
+## own change_scene_to_file() if the path is missing, rather than
+## silently doing nothing, so there's nothing to come back and connect
+## later once DungeonScene exists.
 class_name CharacterCreationScene
 extends Scene
 
@@ -53,7 +62,7 @@ const POTION_SLOTS: Array[Dictionary] = [
 	{"marker_name": "skill_marker", "potion_type": &"skill", "label": "Skill", "effect": "restores 1 point of Skill", "full_name": "POTION OF SKILL"},
 	{"marker_name": "stamina_marker", "potion_type": &"strength", "label": "Stamina", "effect": "restores 1 point of Stamina", "full_name": "POTION OF STRENGTH"},
 	{"marker_name": "luck_marker", "potion_type": &"fortune", "label": "Luck", "effect": "restores your Luck and adds 1 to your Initial Luck", "full_name": "POTION OF FORTUNE"},
-	]
+]
 
 ## Marker's projected point -> SlotLabel top-left, after centering on the
 ## label's size. Negative y places the label above the bracket (bracket
@@ -83,6 +92,13 @@ const SLOT_LABEL_OFFSET := Vector2(0.0, -90.0)
 @onready var _selection_bracket: Control = %SelectionBracket
 @onready var _slot_labels: Array[Label] = [%SlotLabel0, %SlotLabel1, %SlotLabel2]
 @onready var _flavor: Label = %Flavor
+@onready var _descend_button: Button = %Descend
+
+## Scene-scoped, per WarlockInventorySystem's own header comment
+## ("CharacterCreationScene grants starting items") — instantiated and
+## registered in _ready(), not an autoload (unlike WarlockScriptSystem,
+## which has its own reasons to be one).
+var _inventory_system: WarlockInventorySystem
 
 ## One entry per POTION_SLOTS index, resolved once in _ready(). A null
 ## entry means that marker wasn't found under potion_diorama (logged,
@@ -95,9 +111,8 @@ var _potion_markers: Array[Node3D] = []
 ## centre plinth") — not a rule, just where selection starts.
 var _selected_potion_index: int = 1
 
-## Set once on_enter() creates the PC entity. Not used yet this phase —
-## kept so phase 3 (potion grant, Descend) has the id ready without
-## re-deriving it or re-querying by tag.
+## Set once on_enter() creates the PC entity. Used by _on_descend_pressed()
+## to grant the chosen potion without re-querying by tag.
 var _player_entity_id: String = ""
 
 
@@ -106,6 +121,12 @@ func _ready() -> void:
 	register_action("Right", "select_next_potion")
 	_find_potion_markers()
 	_world_overlay.resized.connect(_reposition_potion_ui)
+
+	_inventory_system = WarlockInventorySystem.new()
+	add_child(_inventory_system)
+	register_system(_inventory_system)
+
+	_descend_button.pressed.connect(_on_descend_pressed)
 
 
 ## Left/Right move the potion selection. Only reacts on key-down (START),
@@ -148,6 +169,24 @@ func on_enter() -> void:
 	# see _project_marker()) comes from container layout, which hasn't
 	# necessarily settled yet on the same frame the scene is entered.
 	_reposition_potion_ui.call_deferred()
+
+
+## Grants the currently-selected potion (two measures, Rules_reference.md
+## "Potions") to the player's inventory, then hands off to DungeonScene.
+## Disables the button first — this is a one-way scene transition (§2:
+## "no back-navigation out of chargen"), so nothing should be able to
+## grant a second potion or double-fire change_scene() from a stray
+## repeat click while the first one is still resolving.
+func _on_descend_pressed() -> void:
+	_descend_button.disabled = true
+
+	var slot: Dictionary = POTION_SLOTS[_selected_potion_index]
+	var potion_id: String = WarlockEntityManager_auto.create_potion_entity(slot["potion_type"], slot["full_name"])
+	var result: Dictionary = _inventory_system.add_item(_player_entity_id, potion_id, 1)
+	if not result.get("ok", false):
+		push_warning("CharacterCreationScene: failed to grant potion to player — %s" % result.get("reason", &"unknown"))
+
+	WarlockGameEngine_auto.change_scene("Dungeon", "res://scenes/dungeon/DungeonScene.tscn")
 
 
 ## Finds each POTION_SLOTS marker under potion_diorama by name,
