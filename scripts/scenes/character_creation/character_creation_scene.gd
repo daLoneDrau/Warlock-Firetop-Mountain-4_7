@@ -92,7 +92,13 @@ const SLOT_LABEL_OFFSET := Vector2(0.0, -90.0)
 @onready var _selection_bracket: Control = %SelectionBracket
 @onready var _slot_labels: Array[Label] = [%SlotLabel0, %SlotLabel1, %SlotLabel2]
 @onready var _flavor: Label = %Flavor
-@onready var _descend_button: Button = %Descend
+@onready var _descend_panel: PanelContainer = %Descend
+
+## Guards against a second Descend click/keypress firing while the first
+## is still resolving. PanelContainer (unlike the Button this replaced)
+## has no built-in disabled state to lean on, so this is the whole guard
+## now — checked and set at the top of _on_descend_pressed().
+var _descend_locked: bool = false
 
 ## Scene-scoped, per WarlockInventorySystem's own header comment
 ## ("CharacterCreationScene grants starting items") — instantiated and
@@ -126,7 +132,7 @@ func _ready() -> void:
 	add_child(_inventory_system)
 	register_system(_inventory_system)
 
-	_descend_button.pressed.connect(_on_descend_button_pressed)
+	_descend_panel.gui_input.connect(_on_descend_gui_input)
 
 
 ## Left/Right move the potion selection; descend confirms. Only reacts
@@ -144,15 +150,19 @@ func do_action(action: GameAction) -> void:
 			_on_descend_pressed()
 
 
-## Button.pressed has no START/END phase of its own — it fires once per
-## click, already equivalent to a key-down. Wrapping it in a GameAction
-## and routing it through do_action(), rather than connecting the signal
-## straight to _on_descend_pressed(), means Descend goes through the same
-## single dispatch path as every keyboard action this scene handles,
-## instead of being a second, parallel way anything ends up calling scene
-## logic.
-func _on_descend_button_pressed() -> void:
-	do_action(GameAction.new("descend", GameAction.PHASE_START))
+## Descend is a PanelContainer styled to read as a button (per the
+## reference screenshot/theme_type_variation), not an actual [Button] —
+## no pressed signal of its own, so this does what TitleScene's
+## _on_row_gui_input() does for its own menu rows: watch gui_input for a
+## left-click press. Routed through do_action() rather than calling
+## _on_descend_pressed() directly, so Descend still goes through the same
+## single dispatch path as every keyboard action this scene handles.
+func _on_descend_gui_input(event: InputEvent) -> void:
+	if not (event is InputEventMouseButton):
+		return
+	var mouse_event: InputEventMouseButton = event as InputEventMouseButton
+	if mouse_event.button_index == MOUSE_BUTTON_LEFT and mouse_event.pressed:
+		do_action(GameAction.new("descend", GameAction.PHASE_START))
 
 
 ## Rolls Initial Skill/Stamina/Luck, creates the PC entity carrying them,
@@ -187,12 +197,14 @@ func on_enter() -> void:
 
 ## Grants the currently-selected potion (two measures, Rules_reference.md
 ## "Potions") to the player's inventory, then hands off to DungeonScene.
-## Disables the button first — this is a one-way scene transition (§2:
-## "no back-navigation out of chargen"), so nothing should be able to
-## grant a second potion or double-fire change_scene() from a stray
-## repeat click while the first one is still resolving.
+## Locks first — this is a one-way scene transition (§2: "no back-
+## navigation out of chargen"), so nothing should be able to grant a
+## second potion or double-fire change_scene() from a stray repeat click
+## while the first one is still resolving.
 func _on_descend_pressed() -> void:
-	_descend_button.disabled = true
+	if _descend_locked:
+		return
+	_descend_locked = true
 
 	var slot: Dictionary = POTION_SLOTS[_selected_potion_index]
 	var potion_id: String = WarlockEntityManager_auto.create_potion_entity(slot["potion_type"], slot["full_name"])
