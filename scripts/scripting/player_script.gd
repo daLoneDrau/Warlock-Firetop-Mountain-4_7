@@ -18,6 +18,6 @@ class_name PlayerScript
 extends EntityScript
 
 
-func on_initialized(ctx: Dictionary) -> Dictionary:
-	push_warning("PlayerScript.on_initialized: dummy handler fired for %s" % entity_id)
+func on_initialized(_ctx: Dictionary) -> Dictionary:
+	print("PlayerScript.on_initialized: dummy handler fired for %s" % entity_id)
 	return {}
