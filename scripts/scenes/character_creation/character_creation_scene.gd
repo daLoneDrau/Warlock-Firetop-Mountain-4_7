@@ -21,6 +21,9 @@
 class_name CharacterCreationScene
 extends Scene
 
+const AMBER_DIM := Color(0.788, 0.541, 0.071)
+const PIP_EMPTY_BORDER := Color(0.227, 0.227, 0.227)
+const PIP_SIZE := 6
 
 ## Scene's only abstract method. Nothing to route yet — no actions are
 ## registered on this placeholder scene.
@@ -30,3 +33,26 @@ func do_action(_action: GameAction) -> void:
 
 func on_enter() -> void:
 	print("CharacterCreationScene.on_enter() — placeholder, not real content yet.")
+
+## One pip per possible point in the stat, filled up to the rolled value:
+## 10 of 12 skill is ten filled squares and two empty, not a range-relative bar.
+## The container is an HFlowContainer, so a stat with a max too large for the
+## panel width wraps to a second line instead of overflowing.
+func _build_pips(box: HFlowContainer, filled: int, total: int) -> void:
+	for child in box.get_children():
+		child.queue_free()
+	for i in total:
+		var pip: Control
+		if i < filled:
+			pip = ColorRect.new()
+			pip.color = AMBER_DIM
+		else:
+			pip = Panel.new()
+			var sb := StyleBoxFlat.new()
+			sb.draw_center = false
+			sb.set_border_width_all(1)
+			sb.border_color = PIP_EMPTY_BORDER
+			sb.corner_detail = 1
+			pip.add_theme_stylebox_override("panel", sb)
+		pip.custom_minimum_size = Vector2(PIP_SIZE, PIP_SIZE)
+		box.add_child(pip)
