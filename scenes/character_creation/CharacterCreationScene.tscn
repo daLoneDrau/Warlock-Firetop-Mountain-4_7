@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://dg1o4fiva2jnr" path="res://scripts/scenes/character_creation/character_creation_scene.gd" id="1_bdhjp"]
 [ext_resource type="PackedScene" uid="uid://bh80ajvnx41tw" path="res://assets/modeling/equipment/potion_diorama.glb" id="2_jmdu7"]
 [ext_resource type="Script" uid="uid://b7vwy54v8l8ek" path="res://scripts/rendering/diorama_wireframe_shader.gd" id="3_2ubpa"]
+[ext_resource type="Script" uid="uid://ysrm4wiowq47" path="res://scripts/scenes/character_creation/selection_bracket.gd" id="4_2ubpa"]
 
 [sub_resource type="Environment" id="Environment_wy0tn"]
 
@@ -200,7 +201,7 @@ stretch = true
 [node name="SubViewport" type="SubViewport" parent="Layout/Middle/ViewArea/SubViewportContainer" unique_id=910012]
 own_world_3d = true
 handle_input_locally = false
-size = Vector2i(722, 488)
+size = Vector2i(722, 463)
 render_target_update_mode = 4
 
 [node name="World" type="Node3D" parent="Layout/Middle/ViewArea/SubViewportContainer/SubViewport" unique_id=35181282]
@@ -234,6 +235,7 @@ anchors_preset = 0
 offset_right = 160.0
 offset_bottom = 140.0
 mouse_filter = 2
+script = ExtResource("4_2ubpa")
 
 [node name="SelectedName" type="Label" parent="Layout/Middle/ViewArea/WorldOverlay" unique_id=1793584004]
 unique_name_in_owner = true
@@ -284,14 +286,13 @@ custom_minimum_size = Vector2(224, 0)
 layout_mode = 2
 mouse_filter = 2
 
-[node name="Flavor" type="Label" parent="Layout/BottomBar/Row"]
+[node name="Flavor" type="Label" parent="Layout/BottomBar/Row" unique_id=1425045238]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 4
 text = "You take the wide flask from the centre plinth."
 
-[node name="Descend" type="Button" parent="Layout/BottomBar/Row"]
+[node name="Descend" type="Button" parent="Layout/BottomBar/Row" unique_id=1378480652]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 4

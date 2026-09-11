@@ -4,14 +4,24 @@
 ## again) is retired now that this scene has real content: TitleScene's
 ## "New Game" already targets this file directly.
 ##
-## This pass (roadmap phase 1 of 4) rolls the player's Initial Skill,
-## Stamina, and Luck the instant the scene is entered — no animation, no
-## reroll (Rules_reference.md "Character creation"; UI/UX shell spec
-## §12.3) — and creates the actual PC [Entity], since nothing in the
-## codebase creates one anywhere else. Later phases still to come:
-## potion selection (keyboard-driven — §12.1 excludes the hotspot/click
-## layer from both Title and CharacterCreation) and the Descend
-## transition. Nothing below wires either of those yet.
+## Roadmap phase 1 (done): rolls the player's Initial Skill, Stamina, and
+## Luck the instant the scene is entered — no animation, no reroll
+## (Rules_reference.md "Character creation"; UI/UX shell spec §12.3) —
+## and creates the actual PC [Entity] via WarlockEntityManager.
+##
+## Roadmap phase 2 (this pass): potion selection. §12.1 excludes the
+## dungeon's hotspot/click-resolution layer (§5.1-§5.4) from this screen
+## entirely — "neither screen has a hotspot... nothing to click" — so
+## this is keyboard-driven (Left/Right), not raycast-driven. The diorama
+## asset carries three [Node3D] markers (skill_marker/stamina_marker/
+## luck_marker) at each flask's position; this script projects them
+## through the diorama's Camera3D into the 2D WorldOverlay to place the
+## three SlotLabels (the only potion labels this scene shows — full
+## potion names, dim by default, switching to cyan on selection) and move
+## SelectionBracket's self-drawn corner marks as the selection changes.
+##
+## Still open: Descend (phase 3) — granting the chosen potion to the
+## player entity and transitioning onward.
 class_name CharacterCreationScene
 extends Scene
 
@@ -27,6 +37,33 @@ const SKILL_PIP_TOTAL := 12
 const STAMINA_PIP_TOTAL := 24
 const LUCK_PIP_TOTAL := 12
 
+## One entry per plinth, in the same left-to-right order already baked
+## into the scene's SlotLabel0/1/2. marker_name matches the Node3D the
+## diorama artist placed at each flask's position (found by name under
+## potion_diorama, wherever the .glb's import nested it — see
+## _find_potion_markers()). potion_type is the value
+## WarlockItemComponent/PotionScript expect (Rules_reference.md
+## "Potions": skill/strength/fortune — the book's own names for the
+## Strength/Fortune potions, which restore Stamina/Luck respectively).
+## full_name is display-only and deliberately does NOT follow the book's
+## naming: this project labels potions after the stat they restore
+## ("POTION OF STAMINA", not "POTION OF STRENGTH") — consistent with the
+## marker names themselves and this scene's stat panel, per the reference
+## screenshot. potion_type stays the book's name since that's the data
+## contract PotionScript/Rules_reference.md actually use; full_name is
+## just what the player reads.
+const POTION_SLOTS: Array[Dictionary] = [
+	{"marker_name": "skill_marker", "potion_type": &"skill", "label": "Skill", "full_name": "POTION OF SKILL"},
+	{"marker_name": "stamina_marker", "potion_type": &"strength", "label": "Stamina", "full_name": "POTION OF STRENGTH"},
+	{"marker_name": "luck_marker", "potion_type": &"fortune", "label": "Luck", "full_name": "POTION OF FORTUNE"},
+]
+
+## Marker's projected point -> SlotLabel top-left, after centering on the
+## label's size. TUNING PLACEHOLDER: picked to be "plausible," not
+## verified against the actual rendered diorama — revisit once the
+## markers/camera framing are visible in-editor.
+const SLOT_LABEL_OFFSET := Vector2(0.0, 80.0)
+
 ## Skill/Stamina/Luck (the VBoxContainer wrapping each stat's Row+Pips+
 ## Range) are the only nodes in CharacterCreationScene.tscn with
 ## unique_name_in_owner set — Value/Pips are reached from there by plain
@@ -39,16 +76,48 @@ const LUCK_PIP_TOTAL := 12
 @onready var _luck_value: Label = %Luck.get_node(^"Row/Value")
 @onready var _luck_pips: HFlowContainer = %Luck.get_node(^"Pips")
 
+@onready var _camera: Camera3D = $Layout/Middle/ViewArea/SubViewportContainer/SubViewport/World/Camera3D
+@onready var _sub_viewport: SubViewport = $Layout/Middle/ViewArea/SubViewportContainer/SubViewport
+@onready var _potion_diorama: Node3D = $Layout/Middle/ViewArea/SubViewportContainer/SubViewport/World/potion_diorama
+@onready var _world_overlay: Control = %WorldOverlay
+@onready var _selection_bracket: Control = %SelectionBracket
+@onready var _slot_labels: Array[Label] = [%SlotLabel0, %SlotLabel1, %SlotLabel2]
+@onready var _flavor: Label = %Flavor
+
+## One entry per POTION_SLOTS index, resolved once in _ready(). A null
+## entry means that marker wasn't found under potion_diorama (logged,
+## not fatal) — _reposition_potion_ui()/_update_selection_visuals() skip
+## that slot rather than crashing on a missing Node3D.
+var _potion_markers: Array[Node3D] = []
+
+## Defaults to the centre plinth (index 1, Strength), matching this
+## scene's original placeholder flavor text ("the wide flask from the
+## centre plinth") — not a rule, just where selection starts.
+var _selected_potion_index: int = 1
+
 ## Set once on_enter() creates the PC entity. Not used yet this phase —
-## kept so phase 2/3 (potion grant, Descend) have the id ready without
+## kept so phase 3 (potion grant, Descend) has the id ready without
 ## re-deriving it or re-querying by tag.
 var _player_entity_id: String = ""
 
 
-## Nothing to route yet — potion-selection input (phase 2) is the first
-## real action this scene will register.
-func do_action(_action: GameAction) -> void:
-	pass
+func _ready() -> void:
+	register_action("Left", "select_prev_potion")
+	register_action("Right", "select_next_potion")
+	_find_potion_markers()
+	_world_overlay.resized.connect(_reposition_potion_ui)
+
+
+## Left/Right move the potion selection. Only reacts on key-down (START),
+## same convention as TitleScene, so releasing a key doesn't double-fire.
+func do_action(action: GameAction) -> void:
+	if not action.is_pressed():
+		return
+	match action.name:
+		"select_prev_potion":
+			_move_selection(-1)
+		"select_next_potion":
+			_move_selection(1)
 
 
 ## Rolls Initial Skill/Stamina/Luck, creates the PC entity carrying them,
@@ -73,6 +142,94 @@ func on_enter() -> void:
 
 	_luck_value.text = "%02d" % luck
 	_build_pips(_luck_pips, luck, LUCK_PIP_TOTAL)
+
+	# Deferred, not called inline: WorldOverlay/ViewArea's actual size
+	# (used to scale SubViewport-space projections into overlay-space,
+	# see _project_marker()) comes from container layout, which hasn't
+	# necessarily settled yet on the same frame the scene is entered.
+	_reposition_potion_ui.call_deferred()
+
+
+## Finds each POTION_SLOTS marker under potion_diorama by name,
+## regardless of how deeply the .glb import nested it — recursive,
+## unowned search, since imported sub-scene children aren't necessarily
+## owned by this scene's root the way find_child()'s default expects.
+func _find_potion_markers() -> void:
+	_potion_markers.clear()
+	for slot in POTION_SLOTS:
+		var marker_name: String = slot["marker_name"]
+		var marker: Node3D = _potion_diorama.find_child(marker_name, true, false) as Node3D
+		if marker == null:
+			push_warning("CharacterCreationScene: potion marker '%s' not found under potion_diorama." % marker_name)
+		_potion_markers.append(marker)
+
+
+## Places the three always-visible SlotLabel captions under their
+## markers (setting their full-name text in the same pass) then repaints
+## whichever one is currently selected. Also the resize handler
+## (WorldOverlay.resized) so the layout stays correct if the window/
+## viewport is resized mid-screen.
+func _reposition_potion_ui() -> void:
+	for i in POTION_SLOTS.size():
+		var slot: Dictionary = POTION_SLOTS[i]
+		var label: Label = _slot_labels[i]
+		label.text = slot["full_name"]
+
+		var marker: Node3D = _potion_markers[i]
+		if marker == null:
+			continue
+		var point: Vector2 = _project_marker(marker)
+		label.position = point + SLOT_LABEL_OFFSET - label.size / 2.0
+
+	_update_selection_visuals()
+
+
+func _move_selection(delta: int) -> void:
+	_selected_potion_index = wrapi(_selected_potion_index + delta, 0, POTION_SLOTS.size())
+	_update_selection_visuals()
+
+
+## Colors every SlotLabel each call (not just the one that changed) —
+## simplest way to guarantee the previously-selected label always reverts
+## when selection moves, with no separate "was this the last selected
+## index" bookkeeping to get out of sync. Disabled is just "no override":
+## HintLabel's own font_color already is the dim/disabled look these
+## labels start with, so reverting to it is one call instead of
+## duplicating that color here. Then moves SelectionBracket (self-drawing
+## its own corner marks — see selection_bracket.gd) onto the selected
+## marker's projected point, or hides it if that marker wasn't found.
+func _update_selection_visuals() -> void:
+	for i in POTION_SLOTS.size():
+		var label: Label = _slot_labels[i]
+		if i == _selected_potion_index:
+			label.add_theme_color_override("font_color", StyleGuideColors.HOTSPOT_FILL)
+		else:
+			label.remove_theme_color_override("font_color")
+
+	var marker: Node3D = _potion_markers[_selected_potion_index]
+	if marker == null:
+		_selection_bracket.visible = false
+		return
+
+	var point: Vector2 = _project_marker(marker)
+	_selection_bracket.visible = true
+	_selection_bracket.position = point - _selection_bracket.size / 2.0
+
+	var slot: Dictionary = POTION_SLOTS[_selected_potion_index]
+	_flavor.text = "You take the %s flask from the plinth." % slot["label"]
+
+
+## Projects a diorama-space point through the SubViewport's Camera3D
+## into WorldOverlay's local 2D space. Mirrors the remap UI/UX shell
+## spec §5.3 describes for click resolution (TextureRect/SubViewport size
+## mismatch), just inverted: 3D point -> SubViewport pixel space ->
+## scaled into WorldOverlay's actual on-screen size, since
+## SubViewportContainer has stretch = true and its authored SubViewport
+## resolution (722x488) won't generally match WorldOverlay's real size.
+func _project_marker(marker: Node3D) -> Vector2:
+	var viewport_point: Vector2 = _camera.unproject_position(marker.global_position)
+	var scale: Vector2 = _world_overlay.size / Vector2(_sub_viewport.size)
+	return viewport_point * scale
 
 
 ## One pip per possible point in the stat, filled up to the rolled value:
