@@ -312,7 +312,7 @@ func _confirm_selection() -> void:
 
 	match _selected:
 		MenuItem.NEW_GAME:
-			_game_engine.change_scene("CharacterCreation", "res://scenes/character_creation/CharacterCreationScene.tscn")
+			WarlockGameEngine_auto.change_scene("CharacterCreation", "res://scenes/character_creation/CharacterCreationScene.tscn")
 		MenuItem.CREDITS:
 			_show_credits()
 		_:

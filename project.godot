@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Warlock Firetop Mountain"
-run/main_scene="uid://cv3qqtig1r854"
+run/main_scene="uid://gcqiqslpiwc0"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 

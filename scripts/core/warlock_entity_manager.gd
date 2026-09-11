@@ -63,3 +63,36 @@ func unequip_from_inventory(_player_entity: Entity, _item_entity: Entity) -> boo
 ## anything; kept as a no-op stub to satisfy the abstract contract.
 func send_init_script_event(_entity: Entity) -> void:
 	pass
+
+
+## Rolls Initial Skill/Stamina/Luck per Rules_reference.md's adapted
+## starting ranges (Skill = 1d6+6, Stamina = 2d6+12, Luck = 1d6+6) and
+## builds the PC entity around them: [WarlockAbilitiesComponent] for
+## Skill/Luck, [WarlockHealthComponent] for Stamina (per §13.1, Stamina
+## lives on HealthComponent, not the AbilityScore/modifier-stack system),
+## and [PlayerComponent] for the session-state fields nothing populates
+## yet. Registered via add_entity_immediately() rather than the queued
+## add_entity() alone, so the add_component() calls below — which require
+## is_valid_entity() to already be true — can run this same call instead
+## of waiting for EntityManager's next per-frame update().
+func create_player_entity() -> String:
+	var entity := Entity.new()
+	entity.id = uuidv4()
+	entity.tags.add(PlayerTags.Tag.PC)
+	add_entity(entity)
+	add_entity_immediately(entity.id)
+
+	var abilities := WarlockAbilitiesComponent.new()
+	abilities.add(WarlockAbilityType.ability_key(WarlockAbilityType.Type.SKILL), DiceTower_auto.roll_dx_plus_y(6, 6))
+	abilities.add(WarlockAbilityType.ability_key(WarlockAbilityType.Type.LUCK), DiceTower_auto.roll_dx_plus_y(6, 6))
+	add_component(entity.id, abilities)
+
+	var rolled_stamina: int = DiceTower_auto.roll_x_dy(2, 6) + 12
+	var health := WarlockHealthComponent.new()
+	health.max_hp = rolled_stamina
+	health.current_hp = rolled_stamina
+	add_component(entity.id, health)
+
+	add_component(entity.id, PlayerComponent.new())
+
+	return entity.id

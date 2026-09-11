@@ -13,3 +13,10 @@ enum Type {
 	SKILL = 0,
 	LUCK = 1,
 }
+
+
+## Centralizes the find_key()-to-StringName conversion potion_script.gd
+## already does inline elsewhere, so ability_set's StringName keys are
+## derived the same way at every call site instead of being retyped.
+static func ability_key(ability: int) -> StringName:
+	return StringName(Type.find_key(ability))
