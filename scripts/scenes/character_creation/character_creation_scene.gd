@@ -43,26 +43,26 @@ const LUCK_PIP_TOTAL := 12
 ## potion_diorama, wherever the .glb's import nested it — see
 ## _find_potion_markers()). potion_type is the value
 ## WarlockItemComponent/PotionScript expect (Rules_reference.md
-## "Potions": skill/strength/fortune — the book's own names for the
-## Strength/Fortune potions, which restore Stamina/Luck respectively).
-## full_name is display-only and deliberately does NOT follow the book's
-## naming: this project labels potions after the stat they restore
-## ("POTION OF STAMINA", not "POTION OF STRENGTH") — consistent with the
-## marker names themselves and this scene's stat panel, per the reference
-## screenshot. potion_type stays the book's name since that's the data
-## contract PotionScript/Rules_reference.md actually use; full_name is
-## just what the player reads.
+## "Potions": skill/strength/fortune). full_name is the SlotLabel text.
+## label/effect feed the Flavor line — label names the flask by the stat
+## it restores (matching the marker names), effect is this project's
+## adapted potion power (a flat +1, not "restore to Initial" per the
+## source book): Skill/Strength restore 1 point of their stat; Fortune
+## restores Luck *and* raises Initial Luck by 1.
 const POTION_SLOTS: Array[Dictionary] = [
-	{"marker_name": "skill_marker", "potion_type": &"skill", "label": "Skill", "full_name": "POTION OF SKILL"},
-	{"marker_name": "stamina_marker", "potion_type": &"strength", "label": "Stamina", "full_name": "POTION OF STRENGTH"},
-	{"marker_name": "luck_marker", "potion_type": &"fortune", "label": "Luck", "full_name": "POTION OF FORTUNE"},
-]
+	{"marker_name": "skill_marker", "potion_type": &"skill", "label": "Skill", "effect": "restores 1 point of Skill", "full_name": "POTION OF SKILL"},
+	{"marker_name": "stamina_marker", "potion_type": &"strength", "label": "Stamina", "effect": "restores 1 point of Stamina", "full_name": "POTION OF STRENGTH"},
+	{"marker_name": "luck_marker", "potion_type": &"fortune", "label": "Luck", "effect": "restores your Luck and adds 1 to your Initial Luck", "full_name": "POTION OF FORTUNE"},
+	]
 
 ## Marker's projected point -> SlotLabel top-left, after centering on the
-## label's size. TUNING PLACEHOLDER: picked to be "plausible," not
-## verified against the actual rendered diorama — revisit once the
-## markers/camera framing are visible in-editor.
-const SLOT_LABEL_OFFSET := Vector2(0.0, 80.0)
+## label's size. Negative y places the label above the bracket (bracket
+## is centered on the marker, half-height 70px, so -90 clears its top
+## edge with a small gap) — the corner marks stay on the flask itself,
+## the name reads above them. TUNING PLACEHOLDER: picked to be
+## "plausible," not verified against the actual rendered diorama —
+## revisit once the markers/camera framing are visible in-editor.
+const SLOT_LABEL_OFFSET := Vector2(0.0, -90.0)
 
 ## Skill/Stamina/Luck (the VBoxContainer wrapping each stat's Row+Pips+
 ## Range) are the only nodes in CharacterCreationScene.tscn with
@@ -216,7 +216,7 @@ func _update_selection_visuals() -> void:
 	_selection_bracket.position = point - _selection_bracket.size / 2.0
 
 	var slot: Dictionary = POTION_SLOTS[_selected_potion_index]
-	_flavor.text = "You take the %s flask from the plinth." % slot["label"]
+	_flavor.text = "You take the flask from the plinth. It %s." % slot["effect"]
 
 
 ## Projects a diorama-space point through the SubViewport's Camera3D
