@@ -70,29 +70,50 @@ func send_init_script_event(_entity: Entity) -> void:
 ## builds the PC entity around them: [WarlockAbilitiesComponent] for
 ## Skill/Luck, [WarlockHealthComponent] for Stamina (per §13.1, Stamina
 ## lives on HealthComponent, not the AbilityScore/modifier-stack system),
-## and [PlayerComponent] for the session-state fields nothing populates
-## yet. Registered via add_entity_immediately() rather than the queued
-## add_entity() alone, so the add_component() calls below — which require
-## is_valid_entity() to already be true — can run this same call instead
-## of waiting for EntityManager's next per-frame update().
+## [PlayerComponent] for the session-state fields nothing populates yet,
+## and a [WarlockScriptComponent] running [PlayerScript] (currently a
+## dummy ScriptEvent.INITIALIZED handler — see player_script.gd).
+##
+## Every component is attached to the [Entity] object directly
+## (entity.set_component(), not this class's own add_component()) BEFORE
+## the entity is registered. This ordering matters, not just style:
+## add_entity_immediately() below is what makes the entity valid, and it
+## does so by emitting entity_added and a script_event(INITIALIZED) in
+## the same call — which is also when ScriptSystem's Switchboard
+## subscription auto-attaches whatever ScriptComponent it finds on the
+## entity (systems/script_system.gd _attach_scripts()). Register first
+## and attach components after (the previous version of this method) and
+## that lookup finds nothing yet: the ScriptComponent doesn't exist, the
+## auto-attach silently no-ops, and ScriptEvent.INITIALIZED fires into
+## nothing — no error, just a lost event, since nothing re-sends it
+## later. Attaching components first means _notify_components_added()
+## (called by add_entity_immediately(), same as this class's own
+## add_component() would have done) still runs each component's
+## on_added() normally — nothing about the component lifecycle contract
+## is skipped, only the registration order changes.
 func create_player_entity() -> String:
 	var entity := Entity.new()
 	entity.id = uuidv4()
 	entity.tags.add(PlayerTags.Tag.PC)
-	add_entity(entity)
-	add_entity_immediately(entity.id)
 
 	var abilities := WarlockAbilitiesComponent.new()
 	abilities.add(WarlockAbilityType.ability_key(WarlockAbilityType.Type.SKILL), DiceTower_auto.roll_dx_plus_y(6, 6))
 	abilities.add(WarlockAbilityType.ability_key(WarlockAbilityType.Type.LUCK), DiceTower_auto.roll_dx_plus_y(6, 6))
-	add_component(entity.id, abilities)
+	entity.set_component(abilities)
 
 	var rolled_stamina: int = DiceTower_auto.roll_x_dy(2, 6) + 12
 	var health := WarlockHealthComponent.new()
 	health.max_hp = rolled_stamina
 	health.current_hp = rolled_stamina
-	add_component(entity.id, health)
+	entity.set_component(health)
 
-	add_component(entity.id, PlayerComponent.new())
+	entity.set_component(PlayerComponent.new())
+
+	var script_component := WarlockScriptComponent.new()
+	script_component.main_script = PlayerScript.new()
+	entity.set_component(script_component)
+
+	add_entity(entity)
+	add_entity_immediately(entity.id)
 
 	return entity.id
