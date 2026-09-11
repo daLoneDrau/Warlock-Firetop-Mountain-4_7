@@ -1,6 +1,298 @@
 [gd_scene format=3 uid="uid://wp7qtrhgu64o"]
 
 [ext_resource type="Script" uid="uid://dg1o4fiva2jnr" path="res://scripts/scenes/character_creation/character_creation_scene.gd" id="1_bdhjp"]
+[ext_resource type="PackedScene" uid="uid://bh80ajvnx41tw" path="res://assets/modeling/equipment/potion_diorama.glb" id="2_jmdu7"]
+[ext_resource type="Script" uid="uid://b7vwy54v8l8ek" path="res://scripts/rendering/diorama_wireframe_shader.gd" id="3_2ubpa"]
 
-[node name="CharacterCreation" type="Node2D" unique_id=1120151790]
+[sub_resource type="Environment" id="Environment_wy0tn"]
+
+[node name="CharacterCreation" type="Control" unique_id=1120151790]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_bdhjp")
+
+[node name="Layout" type="VBoxContainer" parent="." unique_id=1095263420]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="TopBar" type="PanelContainer" parent="Layout" unique_id=1284769610]
+layout_mode = 2
+theme_type_variation = &"TopBar"
+
+[node name="Row" type="HBoxContainer" parent="Layout/TopBar" unique_id=238998613]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="ScreenTitle" type="Label" parent="Layout/TopBar/Row" unique_id=371757756]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"PanelContent"
+text = "THE ANTECHAMBER"
+
+[node name="Step1" type="Label" parent="Layout/TopBar/Row" unique_id=1498650209]
+layout_mode = 2
+theme_type_variation = &"SelectionLabel"
+text = "1 ROLL"
+
+[node name="Step2" type="Label" parent="Layout/TopBar/Row" unique_id=2037668337]
+layout_mode = 2
+theme_type_variation = &"SelectionLabel"
+text = "2 POTION"
+
+[node name="Step3" type="Label" parent="Layout/TopBar/Row" unique_id=1736193774]
+layout_mode = 2
+theme_type_variation = &"PanelHeader"
+text = "3 VENTURE FORTH"
+
+[node name="Middle" type="HBoxContainer" parent="Layout" unique_id=1091991996]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+
+[node name="StatPanel" type="PanelContainer" parent="Layout/Middle" unique_id=434494848]
+custom_minimum_size = Vector2(238, 0)
+layout_mode = 2
+theme_type_variation = &"StatPanel"
+
+[node name="Column" type="VBoxContainer" parent="Layout/Middle/StatPanel" unique_id=748290575]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Header" type="Label" parent="Layout/Middle/StatPanel/Column" unique_id=460722822]
+layout_mode = 2
+theme_type_variation = &"PanelHeader"
+text = "YOUR ROLL"
+
+[node name="Stats" type="VBoxContainer" parent="Layout/Middle/StatPanel/Column" unique_id=564776061]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Skill" type="VBoxContainer" parent="Layout/Middle/StatPanel/Column/Stats" unique_id=794667257]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Row" type="HBoxContainer" parent="Layout/Middle/StatPanel/Column/Stats/Skill" unique_id=1420433515]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="Layout/Middle/StatPanel/Column/Stats/Skill/Row" unique_id=129706105]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+theme_type_variation = &"PanelContent"
+text = "SKILL"
+
+[node name="Value" type="Label" parent="Layout/Middle/StatPanel/Column/Stats/Skill/Row" unique_id=551796583]
+layout_mode = 2
+theme_type_variation = &"StatValue"
+text = "10"
+
+[node name="Pips" type="HFlowContainer" parent="Layout/Middle/StatPanel/Column/Stats/Skill" unique_id=1888288653]
+layout_mode = 2
+theme_override_constants/h_separation = 2
+theme_override_constants/v_separation = 2
+
+[node name="Range" type="Label" parent="Layout/Middle/StatPanel/Column/Stats/Skill" unique_id=1323948463]
+layout_mode = 2
+theme_type_variation = &"HintLabel"
+text = "RANGE 7–12"
+
+[node name="Stamina" type="VBoxContainer" parent="Layout/Middle/StatPanel/Column/Stats" unique_id=371264387]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Row" type="HBoxContainer" parent="Layout/Middle/StatPanel/Column/Stats/Stamina" unique_id=1735294342]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="Layout/Middle/StatPanel/Column/Stats/Stamina/Row" unique_id=223416604]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+theme_type_variation = &"PanelContent"
+text = "STAMINA"
+
+[node name="Value" type="Label" parent="Layout/Middle/StatPanel/Column/Stats/Stamina/Row" unique_id=1201918193]
+layout_mode = 2
+theme_type_variation = &"StatValue"
+text = "19"
+
+[node name="Pips" type="HFlowContainer" parent="Layout/Middle/StatPanel/Column/Stats/Stamina" unique_id=1013260127]
+layout_mode = 2
+theme_override_constants/h_separation = 2
+theme_override_constants/v_separation = 2
+
+[node name="Range" type="Label" parent="Layout/Middle/StatPanel/Column/Stats/Stamina" unique_id=1173663880]
+layout_mode = 2
+theme_type_variation = &"HintLabel"
+text = "RANGE 14–24"
+
+[node name="Luck" type="VBoxContainer" parent="Layout/Middle/StatPanel/Column/Stats" unique_id=1288041651]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Row" type="HBoxContainer" parent="Layout/Middle/StatPanel/Column/Stats/Luck" unique_id=1697502165]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="Layout/Middle/StatPanel/Column/Stats/Luck/Row" unique_id=832064269]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+theme_type_variation = &"PanelContent"
+text = "LUCK"
+
+[node name="Value" type="Label" parent="Layout/Middle/StatPanel/Column/Stats/Luck/Row" unique_id=2085650813]
+layout_mode = 2
+theme_type_variation = &"StatValue"
+text = "09"
+
+[node name="Pips" type="HFlowContainer" parent="Layout/Middle/StatPanel/Column/Stats/Luck" unique_id=939794033]
+layout_mode = 2
+theme_override_constants/h_separation = 2
+theme_override_constants/v_separation = 2
+
+[node name="Range" type="Label" parent="Layout/Middle/StatPanel/Column/Stats/Luck" unique_id=976454776]
+layout_mode = 2
+theme_type_variation = &"HintLabel"
+text = "RANGE 7–12"
+
+[node name="Spacer" type="Control" parent="Layout/Middle/StatPanel/Column" unique_id=1937243466]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="Footnote" type="PanelContainer" parent="Layout/Middle/StatPanel/Column" unique_id=1690309285]
+layout_mode = 2
+theme_type_variation = &"ColophonRule"
+
+[node name="Text" type="Label" parent="Layout/Middle/StatPanel/Column/Footnote" unique_id=1642314359]
+layout_mode = 2
+theme_type_variation = &"HintLabel"
+text = "THREE PLINTHS.
+TAKE ONE FLASK."
+
+[node name="ViewArea" type="Control" parent="Layout/Middle" unique_id=1624748418]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="Layout/Middle/ViewArea" unique_id=1212702007]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="Layout/Middle/ViewArea/SubViewportContainer" unique_id=910012]
+own_world_3d = true
+handle_input_locally = false
+size = Vector2i(722, 488)
+render_target_update_mode = 4
+
+[node name="World" type="Node3D" parent="Layout/Middle/ViewArea/SubViewportContainer/SubViewport" unique_id=35181282]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Layout/Middle/ViewArea/SubViewportContainer/SubViewport/World" unique_id=2146319010]
+environment = SubResource("Environment_wy0tn")
+
+[node name="Camera3D" type="Camera3D" parent="Layout/Middle/ViewArea/SubViewportContainer/SubViewport/World" unique_id=739569677]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65, 4.99748)
+fov = 55.0
+
+[node name="potion_diorama" parent="Layout/Middle/ViewArea/SubViewportContainer/SubViewport/World" unique_id=1532179266 instance=ExtResource("2_jmdu7")]
+
+[node name="DioramaWireframeShader" type="Node" parent="Layout/Middle/ViewArea/SubViewportContainer/SubViewport/World/potion_diorama" unique_id=536102864]
+script = ExtResource("3_2ubpa")
+
+[node name="WorldOverlay" type="Control" parent="Layout/Middle/ViewArea" unique_id=540392611]
+unique_name_in_owner = true
+clip_contents = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="SelectionBracket" type="Control" parent="Layout/Middle/ViewArea/WorldOverlay" unique_id=1340215717]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_right = 160.0
+offset_bottom = 140.0
+mouse_filter = 2
+
+[node name="SelectedName" type="Label" parent="Layout/Middle/ViewArea/WorldOverlay" unique_id=1793584004]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 300.0
+offset_bottom = 24.0
+theme_type_variation = &"HintLabel"
+text = "POTION OF STAMINA"
+horizontal_alignment = 1
+
+[node name="SlotLabel0" type="Label" parent="Layout/Middle/ViewArea/WorldOverlay" unique_id=1554984712]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 200.0
+offset_bottom = 22.0
+theme_type_variation = &"HintLabel"
+text = "SKILL"
+horizontal_alignment = 1
+
+[node name="SlotLabel1" type="Label" parent="Layout/Middle/ViewArea/WorldOverlay" unique_id=286531891]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 200.0
+offset_bottom = 22.0
+theme_type_variation = &"HintLabel"
+text = "STAMINA"
+horizontal_alignment = 1
+
+[node name="SlotLabel2" type="Label" parent="Layout/Middle/ViewArea/WorldOverlay" unique_id=18723331]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 200.0
+offset_bottom = 22.0
+theme_type_variation = &"HintLabel"
+text = "LUCK"
+horizontal_alignment = 1
+
+[node name="BottomBar" type="PanelContainer" parent="Layout" unique_id=1167822505]
+layout_mode = 2
+theme_type_variation = &"BottomBar"
+
+[node name="Row" type="HBoxContainer" parent="Layout/BottomBar" unique_id=1961937476]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="PanelGutter" type="Control" parent="Layout/BottomBar/Row" unique_id=1088838193]
+custom_minimum_size = Vector2(224, 0)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Flavor" type="Label" parent="Layout/BottomBar/Row"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+text = "You take the wide flask from the centre plinth."
+
+[node name="Descend" type="Button" parent="Layout/BottomBar/Row"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+text = "DESCEND"

@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://ceapgld8bqdg"]
+
+[ext_resource type="PackedScene" uid="uid://bh80ajvnx41tw" path="res://assets/modeling/equipment/potion_diorama.glb" id="1_2e86v"]
+[ext_resource type="Script" uid="uid://b7vwy54v8l8ek" path="res://scripts/rendering/diorama_wireframe_shader.gd" id="2_p6f1c"]
+
+[sub_resource type="Environment" id="Environment_37ngw"]
+
+[node name="DioramaTester" type="Node3D" unique_id=285378239]
+
+[node name="World" type="Node3D" parent="." unique_id=1193264214]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="World" unique_id=1997900027]
+environment = SubResource("Environment_37ngw")
+
+[node name="Camera3D" type="Camera3D" parent="World" unique_id=630931553]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.1635313, 16.14648)
+fov = 20.9
+
+[node name="potion_diorama" parent="World" unique_id=497809566 instance=ExtResource("1_2e86v")]
+
+[node name="DioramaWireframeShader" type="Node" parent="World/potion_diorama" unique_id=1157532080]
+script = ExtResource("2_p6f1c")
