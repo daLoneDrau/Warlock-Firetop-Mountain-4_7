@@ -201,7 +201,7 @@ stretch = true
 [node name="SubViewport" type="SubViewport" parent="Layout/Middle/ViewArea/SubViewportContainer" unique_id=910012]
 own_world_3d = true
 handle_input_locally = false
-size = Vector2i(722, 463)
+size = Vector2i(722, 465)
 render_target_update_mode = 4
 
 [node name="World" type="Node3D" parent="Layout/Middle/ViewArea/SubViewportContainer/SubViewport" unique_id=35181282]
@@ -292,8 +292,26 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "You take the wide flask from the centre plinth."
 
-[node name="Descend" type="Button" parent="Layout/BottomBar/Row" unique_id=1378480652]
+[node name="Descend" type="PanelContainer" parent="Layout/BottomBar/Row" unique_id=232767660]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_vertical = 4
+mouse_default_cursor_shape = 2
+theme_type_variation = &"MenuItemSelected"
+
+[node name="Row" type="HBoxContainer" parent="Layout/BottomBar/Row/Descend" unique_id=1521312380]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Spacer" type="Label" parent="Layout/BottomBar/Row/Descend/Row" unique_id=1704838463]
+layout_mode = 2
+theme_type_variation = &"CaretSelected"
+
+[node name="Text" type="Label" parent="Layout/BottomBar/Row/Descend/Row" unique_id=236620370]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"MenuSelected"
 text = "DESCEND"
+
+[node name="Spacer2" type="Label" parent="Layout/BottomBar/Row/Descend/Row" unique_id=1175531424]
+layout_mode = 2
+theme_type_variation = &"MetaLabel"
