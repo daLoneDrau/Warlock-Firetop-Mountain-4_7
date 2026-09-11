@@ -126,11 +126,12 @@ func _ready() -> void:
 	add_child(_inventory_system)
 	register_system(_inventory_system)
 
-	_descend_button.pressed.connect(_on_descend_pressed)
+	_descend_button.pressed.connect(_on_descend_button_pressed)
 
 
-## Left/Right move the potion selection. Only reacts on key-down (START),
-## same convention as TitleScene, so releasing a key doesn't double-fire.
+## Left/Right move the potion selection; descend confirms. Only reacts
+## on key-down (START), same convention as TitleScene, so releasing a
+## key (or, for descend, the button's own release) doesn't double-fire.
 func do_action(action: GameAction) -> void:
 	if not action.is_pressed():
 		return
@@ -139,6 +140,19 @@ func do_action(action: GameAction) -> void:
 			_move_selection(-1)
 		"select_next_potion":
 			_move_selection(1)
+		"descend":
+			_on_descend_pressed()
+
+
+## Button.pressed has no START/END phase of its own — it fires once per
+## click, already equivalent to a key-down. Wrapping it in a GameAction
+## and routing it through do_action(), rather than connecting the signal
+## straight to _on_descend_pressed(), means Descend goes through the same
+## single dispatch path as every keyboard action this scene handles,
+## instead of being a second, parallel way anything ends up calling scene
+## logic.
+func _on_descend_button_pressed() -> void:
+	do_action(GameAction.new("descend", GameAction.PHASE_START))
 
 
 ## Rolls Initial Skill/Stamina/Luck, creates the PC entity carrying them,
